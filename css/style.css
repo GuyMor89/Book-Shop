@@ -16,7 +16,7 @@ h1 {
     margin-block-start: 10px;
 }
 
-.container {
+.table {
     display: grid;
     padding: 1px;
     gap: 1px;
@@ -25,13 +25,10 @@ h1 {
     /* border: 1px solid black; */
 
     grid-template-columns: 500fr 100fr 350fr;
-    grid-template-rows: 100fr 100fr 100fr 100fr;
+    /* grid-template-rows: 85fr 100fr 100fr 100fr; */
 
     grid-template-areas:
-        "title price actions"
-        "title1 price1 actions1"
-        "title2 price2 actions2"
-        "title3 price3 actions3";
+        "title0 price0 actions0";
 
     width: 100vw;
 }
@@ -120,44 +117,14 @@ h1 {
     background-color: #ec8123;
 }
 
-
-
-.title1 {
-    grid-area: title1;
+.title0 {
+    grid-area: title0;
 }
 
-.title2 {
-    grid-area: title2;
+.price0 {
+    grid-area: price0;
 }
 
-.title3 {
-    grid-area: title3;
-}
-
-
-
-.price1 {
-    grid-area: price1;
-}
-
-.price2 {
-    grid-area: price2;
-}
-
-.price3 {
-    grid-area: price3;
-}
-
-
-
-.actions1 {
-    grid-area: actions1;
-}
-
-.actions2 {
-    grid-area: actions2;
-}
-
-.actions3 {
-    grid-area: actions3;
+.actions0 {
+    grid-area: actions0;
 }
