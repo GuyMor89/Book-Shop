@@ -33,6 +33,10 @@ h1 {
     width: 100vw;
 }
 
+.title {
+    padding-inline-start: 5px;
+}
+
 
 .title,
 .price,
@@ -116,6 +120,7 @@ h1 {
 .delete {
     background-color: #ec8123;
 }
+
 
 .title0 {
     grid-area: title0;

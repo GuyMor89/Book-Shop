@@ -22,22 +22,31 @@ function renderTable() {
     var bookGridArea = getBooks().map((book, idx) =>
         `"title${idx + 1} price${idx + 1} actions${idx + 1}"`
     )
-    var currentGridAreas = getComputedStyle(table).gridTemplateAreas
+
+    var currentGridAreas = `"title0 price0 actions0"`
     var updatedGridAreas = currentGridAreas + bookGridArea.join('')
 
     table.style.gridTemplateAreas = updatedGridAreas
 
 
     var bookCSS = getBooks().map((book, idx) =>
-        `.title${idx + 1} { grid-area: title${idx + 1}}
-    .price${idx + 1} {grid-area: price${idx + 1}}
-    .actions${idx + 1} {grid-area: actions${idx + 1}}`
-    )
+        `.title${idx + 1} { grid-area: title${idx + 1} }
+         .price${idx + 1} { grid-area: price${idx + 1} }
+         .actions${idx + 1} { grid-area: actions${idx + 1} }`
+    ).join('')
 
-    var styleSheet = document.createElement("style")
-    styleSheet.textContent = bookCSS.join('')
+
+    var styleSheet = document.createElement('style')
+    styleSheet.textContent = bookCSS
+
     document.head.appendChild(styleSheet)
-
 }
 
 
+function onAddBook(event) {
+    event.preventDefault()
+
+    addBook()
+
+    renderTable()
+}
