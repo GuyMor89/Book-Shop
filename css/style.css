@@ -1,3 +1,163 @@
 * {
     box-sizing: border-box;
 }
+
+body {
+    display: flex;
+    flex-direction: column;
+
+    background-color: antiquewhite;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
+    align-items: center;
+}
+
+h1 {
+    margin-block-start: 10px;
+}
+
+.container {
+    display: grid;
+    padding: 1px;
+    gap: 1px;
+
+    background-color: rgb(205, 205, 205);
+    /* border: 1px solid black; */
+
+    grid-template-columns: 500fr 100fr 350fr;
+    grid-template-rows: 100fr 100fr 100fr 100fr;
+
+    grid-template-areas:
+        "title price actions"
+        "title1 price1 actions1"
+        "title2 price2 actions2"
+        "title3 price3 actions3";
+
+    width: 100vw;
+}
+
+
+.title,
+.price,
+.actions {
+    display: flex;
+    place-items: center;
+}
+
+
+.title0,
+.price0,
+.actions0 {
+    font-weight: bolder;
+    font-size: 1.1em;
+    justify-content: center;
+}
+
+
+
+.price {
+    grid-area: price;
+    justify-content: center;
+}
+
+.title {
+    grid-area: title;
+}
+
+.actions {
+    display: flex;
+    gap: 5px;
+    grid-area: actions;
+
+    justify-content: center;
+}
+
+
+
+.price:nth-of-type(even),
+.actions:nth-of-type(odd),
+.title:nth-of-type(odd) {
+    background-color: rgb(224, 224, 224);
+}
+
+.price:nth-of-type(odd),
+.actions:nth-of-type(even),
+.title:nth-of-type(even) {
+    background-color: rgb(255, 255, 255);
+    /* border: 1px solid rgb(197, 197, 197); */
+}
+
+
+.read,
+.update,
+.delete {
+    display: flex;
+    place-items: center;
+    justify-content: center;
+
+    margin-block-start: 5px;
+    margin-block-end: 5px;
+
+    font-weight: bolder;
+    border-radius: 5px;
+
+    width: 70px;
+    height: 25px;
+
+    cursor: pointer;
+
+}
+
+.read {
+    background-color: #51bcf1;
+}
+
+.update {
+    background-color: #f4c74d;
+}
+
+.delete {
+    background-color: #ec8123;
+}
+
+
+
+.title1 {
+    grid-area: title1;
+}
+
+.title2 {
+    grid-area: title2;
+}
+
+.title3 {
+    grid-area: title3;
+}
+
+
+
+.price1 {
+    grid-area: price1;
+}
+
+.price2 {
+    grid-area: price2;
+}
+
+.price3 {
+    grid-area: price3;
+}
+
+
+
+.actions1 {
+    grid-area: actions1;
+}
+
+.actions2 {
+    grid-area: actions2;
+}
+
+.actions3 {
+    grid-area: actions3;
+}
