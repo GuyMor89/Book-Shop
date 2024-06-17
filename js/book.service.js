@@ -27,7 +27,9 @@ function getBooks() {
     return gBooks
 }
 
-function addBook() {
-    var input = document.querySelector('[placeholder="Add a book"]').value
-    gBooks.push({ title: input, price: getRandomInt(1, 20) * 10 })
+
+function removeBook(title) {
+    var bookIdToRemove = getBooks().findIndex((book, idx) => book.title === title)
+    if (bookIdToRemove > -1) gBooks.splice(bookIdToRemove, 1)
 }
+

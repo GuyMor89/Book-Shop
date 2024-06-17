@@ -7,13 +7,16 @@ function onInit() {
 function renderTable() {
     var table = document.querySelector('.table')
 
+    var injectedHTML = document.querySelectorAll('[data-idx]') 
+    injectedHTML.forEach(element => element.remove())
+
     var bookHTML = getBooks().map((book, idx) =>
-        `<div class="title title${idx + 1}">${book.title}</div>
-         <div class="price price${idx + 1}">${book.price}</div>
-         <div class="actions actions${idx + 1}">
-                <div class="read read${idx + 1}">Read</div>
-                <div class="update update${idx + 1}">Update</div>
-                <div class="delete delete${idx + 1}">Delete</div>
+        `<div class="title title${idx + 1}" data-idx>${book.title}</div>
+         <div class="price price${idx + 1}" data-idx>${book.price}</div>
+         <div class="actions actions${idx + 1}" data-idx>
+                <div class="read read${idx + 1}" data-idx>Read</div>
+                <div class="update update${idx + 1}" data-idx>Update</div>
+                <div class="delete delete${idx + 1}" data-idx onclick="onRemoveBook('${book.title}')">Delete</div>
          </div>`
     )
     table.insertAdjacentHTML('beforeend', bookHTML.join(''))
@@ -46,7 +49,14 @@ function renderTable() {
 function onAddBook(event) {
     event.preventDefault()
 
-    addBook()
+    var input = document.querySelector('[placeholder="Add a book"]').value
+    gBooks.push({ title: input, price: getRandomInt(1, 20) * 10 })
+
+    renderTable()
+}
+
+function onRemoveBook(title) {
+    removeBook(title)
 
     renderTable()
 }
