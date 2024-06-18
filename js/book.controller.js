@@ -10,20 +10,20 @@ function renderTable() {
     var injectedHTML = document.querySelectorAll('[data-idx]')
     injectedHTML.forEach(element => element.remove())
 
-    var bookHTML = getBooks().map((book) =>
-        `<div class="title title${book.id}" data-idx>${book.title}</div>
-         <div class="price price${book.id}" data-idx>${book.price}</div>
-         <div class="actions actions${book.id}" data-idx>
-                <div class="read read${book.id}" data-idx>Read</div>
-                <div class="update update${book.id}" data-idx onclick="onUpdateBookTitle(${book.id}), onUpdateBookPrice(${book.id})">Update</div>
-                <div class="delete delete${book.id}" data-idx onclick="onRemoveBook('${book.title}')">Delete</div>
+    var bookHTML = getBooks().map((book, idx) =>
+        `<div class="title title${idx + 1}" data-idx>${book.title}</div>
+         <div class="price price${idx + 1}" data-idx>${book.price}</div>
+         <div class="actions actions${idx + 1}" data-idx>
+                <div class="read read${idx + 1}" data-idx onclick="onDisplayBook(${book.id})">Read</div>
+                <div class="update update${idx + 1}" data-idx onclick="onUpdateBookTitle(${idx + 1}), onUpdateBookPrice(${idx + 1})">Update</div>
+                <div class="delete delete${idx + 1}" data-idx onclick="onRemoveBook('${book.title}')">Delete</div>
          </div>`
     )
     table.insertAdjacentHTML('beforeend', bookHTML.join(''))
 
 
     var bookGridArea = getBooks().map((book, idx) =>
-        `"title${book.id} price${book.id} actions${book.id}"`
+        `"title${idx + 1} price${idx + 1} actions${idx + 1}"`
     )
 
     var currentGridAreas = `"title0 price0 actions0"`
@@ -33,9 +33,9 @@ function renderTable() {
 
 
     var bookCSS = getBooks().map((book, idx) =>
-        `.title${book.id} { grid-area: title${book.id} }
-         .price${book.id} { grid-area: price${book.id} }
-         .actions${book.id} { grid-area: actions${book.id} }`
+        `.title${idx + 1} { grid-area: title${idx + 1} }
+         .price${idx + 1} { grid-area: price${idx + 1} }
+         .actions${idx + 1} { grid-area: actions${idx + 1} }`
     ).join('')
 
 
@@ -45,12 +45,13 @@ function renderTable() {
     document.head.appendChild(styleSheet)
 }
 
+var id = 6
 
 function onAddBook(event) {
     event.preventDefault()
 
     var input = document.querySelector('[placeholder="Add a book"]').value
-    gBooks.push({ title: input, price: getRandomInt(1, 20) * 10 })
+    gBooks.push({ id: id++, title: input, price: getRandomInt(1, 20) * 10 })
 
     renderTable()
 }
@@ -63,9 +64,9 @@ function onRemoveBook(title) {
 
 
 function onUpdateBookTitle(idx) {
-
     const id = idx - 1
     const elTitle = document.querySelector(`.title${idx}`)
+    console.log(elTitle);
 
     function switchToInput(elTitle, id) {
 
@@ -92,6 +93,7 @@ function onUpdateBookTitle(idx) {
 }
 
 function onUpdateBookPrice(idx) {
+    console.log(idx);
 
     const id = idx - 1
     const elPrice = document.querySelector(`.price${idx}`)
@@ -118,4 +120,23 @@ function onUpdateBookPrice(idx) {
     }
 
     switchToInput(elPrice, id)
+}
+
+function onDisplayBook(elBtn) {
+    var modalOverlay = document.querySelector('.modal-overlay')
+    modalOverlay.style.display = 'block'
+
+    var bookToDisplay = getBooks().find(book => book.id === elBtn)
+
+    var modal = document.querySelector('.modal')
+    modal.innerHTML = `<span>Book Title:</span> ${bookToDisplay.title}<br>
+                       <span>Book Price:</span> ${bookToDisplay.price}<br>
+                       <span>Book ID:</span> ${bookToDisplay.id}`
+}
+
+window.onclick = function (event) {
+    var modal = document.querySelector('.modal-overlay')
+    if (event.target === modal && modal.style.display === 'block') {
+        modal.style.display = 'none'
+    }
 }

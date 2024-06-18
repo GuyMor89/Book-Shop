@@ -33,7 +33,7 @@ function getBooks() {
 
 
 function removeBook(title) {
-    var bookIdToRemove = getBooks().findIndex((book, idx) => book.title === title)
-    if (bookIdToRemove > -1) gBooks.splice(bookIdToRemove, 1)
+    var bookIdToRemove = getBooks().findIndex((book) => book.title === title)
+    if (bookIdToRemove > -1) getBooks().splice(bookIdToRemove, 1)
 }
 
