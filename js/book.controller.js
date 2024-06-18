@@ -7,23 +7,23 @@ function onInit() {
 function renderTable() {
     var table = document.querySelector('.table')
 
-    var injectedHTML = document.querySelectorAll('[data-idx]') 
+    var injectedHTML = document.querySelectorAll('[data-idx]')
     injectedHTML.forEach(element => element.remove())
 
-    var bookHTML = getBooks().map((book, idx) =>
-        `<div class="title title${idx + 1}" data-idx>${book.title}</div>
-         <div class="price price${idx + 1}" data-idx>${book.price}</div>
-         <div class="actions actions${idx + 1}" data-idx>
-                <div class="read read${idx + 1}" data-idx>Read</div>
-                <div class="update update${idx + 1}" data-idx>Update</div>
-                <div class="delete delete${idx + 1}" data-idx onclick="onRemoveBook('${book.title}')">Delete</div>
+    var bookHTML = getBooks().map((book) =>
+        `<div class="title title${book.id}" data-idx>${book.title}</div>
+         <div class="price price${book.id}" data-idx>${book.price}</div>
+         <div class="actions actions${book.id}" data-idx>
+                <div class="read read${book.id}" data-idx>Read</div>
+                <div class="update update${book.id}" data-idx onclick="onUpdateBookTitle(${book.id})">Update</div>
+                <div class="delete delete${book.id}" data-idx onclick="onRemoveBook('${book.title}')">Delete</div>
          </div>`
     )
     table.insertAdjacentHTML('beforeend', bookHTML.join(''))
 
 
     var bookGridArea = getBooks().map((book, idx) =>
-        `"title${idx + 1} price${idx + 1} actions${idx + 1}"`
+        `"title${book.id} price${book.id} actions${book.id}"`
     )
 
     var currentGridAreas = `"title0 price0 actions0"`
@@ -33,9 +33,9 @@ function renderTable() {
 
 
     var bookCSS = getBooks().map((book, idx) =>
-        `.title${idx + 1} { grid-area: title${idx + 1} }
-         .price${idx + 1} { grid-area: price${idx + 1} }
-         .actions${idx + 1} { grid-area: actions${idx + 1} }`
+        `.title${book.id} { grid-area: title${book.id} }
+         .price${book.id} { grid-area: price${book.id} }
+         .actions${book.id} { grid-area: actions${book.id} }`
     ).join('')
 
 
@@ -59,4 +59,28 @@ function onRemoveBook(title) {
     removeBook(title)
 
     renderTable()
+}
+
+
+function onUpdateBookTitle(idx) {
+
+    const id = idx - 1
+    const elTitle = document.querySelector(`.title${idx}`)
+
+    function switchToInput(elTitle, id) {
+        var input = document.createElement('input')
+        input.value = elTitle.innerText
+        input.onkeydown = (enter) => { if (enter.key === 'Enter') switchToDiv(elTitle, input, id) }
+
+        elTitle.replaceWith(input)
+        input.focus()
+    }
+    function switchToDiv(elTitle, input, id) {
+        elTitle.innerText = input.value
+        gBooks[id].title = input.value
+
+        input.replaceWith(elTitle)
+    }
+
+    switchToInput(elTitle, id)
 }
