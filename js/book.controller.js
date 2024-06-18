@@ -15,7 +15,7 @@ function renderTable() {
          <div class="price price${book.id}" data-idx>${book.price}</div>
          <div class="actions actions${book.id}" data-idx>
                 <div class="read read${book.id}" data-idx>Read</div>
-                <div class="update update${book.id}" data-idx onclick="onUpdateBookTitle(${book.id})">Update</div>
+                <div class="update update${book.id}" data-idx onclick="onUpdateBookTitle(${book.id}), onUpdateBookPrice(${book.id})">Update</div>
                 <div class="delete delete${book.id}" data-idx onclick="onRemoveBook('${book.title}')">Delete</div>
          </div>`
     )
@@ -68,7 +68,13 @@ function onUpdateBookTitle(idx) {
     const elTitle = document.querySelector(`.title${idx}`)
 
     function switchToInput(elTitle, id) {
+
+        if (elTitle.tagName.toLowerCase() === 'input') {
+            return
+        }
+
         var input = document.createElement('input')
+        input.classList.add('title', `title${idx}`)
         input.value = elTitle.innerText
         input.onkeydown = (enter) => { if (enter.key === 'Enter') switchToDiv(elTitle, input, id) }
 
@@ -83,4 +89,33 @@ function onUpdateBookTitle(idx) {
     }
 
     switchToInput(elTitle, id)
+}
+
+function onUpdateBookPrice(idx) {
+
+    const id = idx - 1
+    const elPrice = document.querySelector(`.price${idx}`)
+
+    function switchToInput(elPrice, id) {
+
+        if (elPrice.tagName.toLowerCase() === 'input') {
+            return
+        }
+
+        var input = document.createElement('input')
+        input.classList.add('price', `price${idx}`)
+        input.value = elPrice.innerText
+        input.onkeydown = (enter) => { if (enter.key === 'Enter') switchToDiv(elPrice, input, id) }
+
+        elPrice.replaceWith(input)
+        input.focus()
+    }
+    function switchToDiv(elPrice, input, id) {
+        elPrice.innerText = input.value
+        gBooks[id].price = input.value
+
+        input.replaceWith(elPrice)
+    }
+
+    switchToInput(elPrice, id)
 }

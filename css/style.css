@@ -73,20 +73,27 @@ h1 {
     justify-content: center;
 }
 
+input.price{
+    display: flex;
+    width: 100%;
+    justify-self: center;
+    text-align: center;
+}
 
 
-.price:nth-of-type(even),
-.actions:nth-of-type(odd),
-.title:nth-of-type(odd) {
+[class^="price"]:is(.price0, .price2, .price4, .price6, .price8, .price10, .price12),
+[class^="title"]:is(.title0, .title2, .title4, .title6, .title8, .title10, .title12),
+[class^="actions"]:is(.actions0, .actions2, .actions4, .actions6, .actions8, .actions10, .actions12) {
     background-color: rgb(224, 224, 224);
 }
 
-.price:nth-of-type(odd),
-.actions:nth-of-type(even),
-.title:nth-of-type(even) {
+
+[class^="price"]:is(.price1, .price3, .price5, .price7, .price9, .price11, .price13),
+[class^="title"]:is(.title1, .title3, .title5, .title7, .title9, .title11, .title13),
+[class^="actions"]:is(.actions1, .actions3, .actions5, .actions7, .actions9, .actions11, .actions13) {
     background-color: rgb(255, 255, 255);
-    /* border: 1px solid rgb(197, 197, 197); */
 }
+
 
 
 .read,
