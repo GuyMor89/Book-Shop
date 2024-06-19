@@ -21,7 +21,7 @@ function injectedHTML(table) {
          <div class="actions actions${idx + 1}" data-idx>
             <div class="read read${idx + 1}" data-idx onclick="onDisplayBook(${book.id})">Read</div>
             <div class="update update${idx + 1}" data-idx onclick="onUpdateBookTitle(${idx + 1}), onUpdateBookPrice(${idx + 1})">Update</div>
-            <div class="delete delete${idx + 1}" data-idx onclick="onRemoveBook('${book.title}')">Delete</div>
+            <div class="delete delete${idx + 1}" data-idx onclick="onDeleteBook('${book.title}')">Delete</div>
      </div>`
     )
     table.insertAdjacentHTML('beforeend', bookHTML.join(''))
@@ -59,14 +59,20 @@ function onAddBook(event) {
     var id = gBooks.length + 1
 
     var input = document.querySelector('[placeholder="Add a book"]').value
+
+    if (input === '') return displayMessage('Can\'t add blank title')
+
     gBooks.push({ id, title: input, price: getRandomInt(1, 20) * 10 })
 
     saveToStorage('bookArray', gBooks)
+    displayMessage('Book added!')
+
     renderTable()
 }
 
-function onRemoveBook(title) {
+function onDeleteBook(title) {
     removeBook(title)
+    displayMessage('Book deleted!')
 
     renderTable()
 }
@@ -95,6 +101,7 @@ function onUpdateBookTitle(idx) {
         elTitle.innerText = input.value
         gBooks[id].title = input.value
         saveToStorage('bookArray', gBooks)
+        displayMessage('Title updated!')
 
         input.replaceWith(elTitle)
     }
@@ -127,6 +134,7 @@ function onUpdateBookPrice(idx) {
         elPrice.innerText = input.value
         gBooks[id].price = input.value
         saveToStorage('bookArray', gBooks)
+        displayMessage('Price updated!')
 
         input.replaceWith(elPrice)
     }
@@ -151,4 +159,18 @@ window.onclick = function (event) {
     if (event.target === modal && modal.style.display === 'block') {
         modal.style.display = 'none'
     }
+}
+
+var messageInterval
+
+function displayMessage(message) {
+    var messageModal = document.querySelector('.message')
+    clearTimeout(messageInterval)
+
+    messageModal.style.visibility = 'visible'
+    messageModal.innerText = `${message}`
+
+    messageInterval = setTimeout(() => {
+        messageModal.style.visibility = 'hidden'
+    }, 1000);
 }
