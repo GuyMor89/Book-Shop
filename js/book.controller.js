@@ -7,6 +7,11 @@ function onInit() {
 function renderTable() {
     var table = document.querySelector('.table')
 
+    injectedHTML(table)
+    injectCSS(table)
+}
+
+function injectedHTML(table) {
     var injectedHTML = document.querySelectorAll('[data-idx]')
     injectedHTML.forEach(element => element.remove())
 
@@ -14,14 +19,16 @@ function renderTable() {
         `<div class="title title${idx + 1}" data-idx>${book.title}</div>
          <div class="price price${idx + 1}" data-idx>${book.price}</div>
          <div class="actions actions${idx + 1}" data-idx>
-                <div class="read read${idx + 1}" data-idx onclick="onDisplayBook(${book.id})">Read</div>
-                <div class="update update${idx + 1}" data-idx onclick="onUpdateBookTitle(${idx + 1}), onUpdateBookPrice(${idx + 1})">Update</div>
-                <div class="delete delete${idx + 1}" data-idx onclick="onRemoveBook('${book.title}')">Delete</div>
-         </div>`
+            <div class="read read${idx + 1}" data-idx onclick="onDisplayBook(${book.id})">Read</div>
+            <div class="update update${idx + 1}" data-idx onclick="onUpdateBookTitle(${idx + 1}), onUpdateBookPrice(${idx + 1})">Update</div>
+            <div class="delete delete${idx + 1}" data-idx onclick="onRemoveBook('${book.title}')">Delete</div>
+     </div>`
     )
     table.insertAdjacentHTML('beforeend', bookHTML.join(''))
+}
 
 
+function injectCSS(table) {
     var bookGridArea = getBooks().map((book, idx) =>
         `"title${idx + 1} price${idx + 1} actions${idx + 1}"`
     )
@@ -45,14 +52,16 @@ function renderTable() {
     document.head.appendChild(styleSheet)
 }
 
-var id = 6
 
 function onAddBook(event) {
     event.preventDefault()
 
-    var input = document.querySelector('[placeholder="Add a book"]').value
-    gBooks.push({ id: id++, title: input, price: getRandomInt(1, 20) * 10 })
+    var id = gBooks.length + 1
 
+    var input = document.querySelector('[placeholder="Add a book"]').value
+    gBooks.push({ id, title: input, price: getRandomInt(1, 20) * 10 })
+
+    saveToStorage('bookArray', gBooks)
     renderTable()
 }
 
@@ -64,9 +73,9 @@ function onRemoveBook(title) {
 
 
 function onUpdateBookTitle(idx) {
+
     const id = idx - 1
     const elTitle = document.querySelector(`.title${idx}`)
-    console.log(elTitle);
 
     function switchToInput(elTitle, id) {
 
@@ -85,15 +94,17 @@ function onUpdateBookTitle(idx) {
     function switchToDiv(elTitle, input, id) {
         elTitle.innerText = input.value
         gBooks[id].title = input.value
+        saveToStorage('bookArray', gBooks)
 
         input.replaceWith(elTitle)
     }
 
     switchToInput(elTitle, id)
+
+    saveToStorage('bookArray', gBooks)
 }
 
 function onUpdateBookPrice(idx) {
-    console.log(idx);
 
     const id = idx - 1
     const elPrice = document.querySelector(`.price${idx}`)
@@ -115,6 +126,7 @@ function onUpdateBookPrice(idx) {
     function switchToDiv(elPrice, input, id) {
         elPrice.innerText = input.value
         gBooks[id].price = input.value
+        saveToStorage('bookArray', gBooks)
 
         input.replaceWith(elPrice)
     }
