@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form class="filter-books-form">
+        <input type="text" oninput="onFilterBooks(event)" placeholder="Filter books">
+        <button type="button">Filter</button>
+    </form>
+    
+    <table id="book-table"></table>
+    
+
+    <script>
+        renderTable(getBooks())
+
+
+        function onFilterBooks(event) {
+            var title = event.target.value.toLowerCase()
+            var books = getBooks()
+
+            var filteredBooks = books.filter(book => book.title.toLowerCase().includes(title))
+
+            renderTable(filteredBooks)
+        }
+
+        function renderTable(books) {
+            var table = document.querySelector('#book-table')
+            table.innerHTML = ''
+
+            books.forEach(book => {
+                var row = document.createElement('tr')
+                var cell = document.createElement('td')
+                cell.textContent = book.title
+                row.appendChild(cell)
+                table.appendChild(row)
+            })
+        }
+
+        function getBooks() {
+            // Fetch or return your books array here
+            return [
+                { title: 'Book One' },
+                { title: 'Book Two' },
+                { title: 'Another Book' }
+            ]
+        }
+
+    </script>
+
+</body>
+
+</html>

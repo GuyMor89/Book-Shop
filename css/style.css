@@ -3,50 +3,73 @@
 }
 
 body {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+        "title title"
+        "filter-books add-book"
+        "table table";
 
     background-color: antiquewhite;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 
     align-items: center;
+    justify-items: center;
+
+    background-image: url("books.png");
 }
 
 h1 {
+    grid-area: title;
+    justify-self: center;
+
     margin-block-start: 10px;
     margin-block-end: 30px;
+    padding: 5px;
+    padding-inline: 25px;
 
-    font-size: 40px;
+    background-color: rgba(255, 255, 255, 0.900);
+    color: rgb(26, 26, 26);
+    box-shadow:
+    0 0 10px 10px rgba(255, 255, 255, 0.300);
+
+    border: 3px dashed rgba(0, 0, 0, 1.000);
+    border-radius: 5px;
+    font-size: 30px;
 }
 
 .message {
-    margin-block-end: 10px;
     position: fixed;
-    top: 65px;
+    margin-block-end: 10px;
     padding-inline: 10px;
     padding-block: 3px;
+    top: 75px;
 
     background-color: #51bcf183;
     border-radius: 3px;
     text-align: center;
     color: rgb(0, 0, 0);
+    font-size: 0.75em;
 
     visibility: hidden;
 }
 
 
 .table {
+    grid-area: table;
     display: grid;
     padding: 1px;
-    margin-block-start: 5px;
+    margin-block-start: 7px;
     gap: 1px;
 
     background-color: rgb(205, 205, 205);
     border: 1px solid rgba(0, 0, 0, 0.522);
-    border-radius: 2px;
+    border-radius: 3px;
+    box-shadow:
+    0 7px 5px 0px rgba(0, 0, 0, 0.5);
 
     grid-template-columns: 500fr 100fr 350fr;
-    /* grid-template-rows: 85fr 100fr 100fr 100fr; */
 
     grid-template-areas:
         "title0 price0 actions0";
@@ -56,17 +79,23 @@ h1 {
 
 
 
-form {
-    margin-block-end: 5px;
+.filter-book-form {
+    grid-area: filter-books;
+}
+
+.add-book-form {
+    grid-area: add-book;
 }
 
 form input {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     border: 2px solid rgba(0, 0, 0, 0.574);
     border-radius: 3px;
+    box-shadow:
+    0 2px 5px 0px rgba(0, 0, 0, 0.2);
 }
 
-form button {
+button {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     border-radius: 3px;
 }

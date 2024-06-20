@@ -7,140 +7,160 @@ function onInit() {
 function renderTable() {
     var table = document.querySelector('.table')
 
-    injectedHTML(table)
+    injectHTML(table)
     injectCSS(table)
+
+    function injectHTML(table) {
+        var injectedHTML = document.querySelectorAll('[data-idx]')
+        injectedHTML.forEach(element => element.remove())
+
+        var bookHTML = getBooks().map((book, idx) =>
+            `<div class="title title${idx + 1}" data-idx>${book.title}</div>
+             <div class="price price${idx + 1}" data-idx>${book.price}</div>
+             <div class="actions actions${idx + 1}" data-idx>
+                <div class="read read${idx + 1}" data-idx onclick="onDisplayBook(${book.id})">Read</div>
+                <div class="update update${idx + 1}" data-idx onclick="onUpdateBook('${book.title}', ${book.id})">Update</div>
+                <div class="delete delete${idx + 1}" data-idx onclick="onDeleteBook('${book.title}', ${book.id})">Delete</div>
+         </div>`
+        )
+        table.insertAdjacentHTML('beforeend', bookHTML.join(''))
+    }
+
+
+    function injectCSS(table) {
+        var bookGridArea = getBooks().map((book, idx) =>
+            `"title${idx + 1} price${idx + 1} actions${idx + 1}"`
+        )
+
+        var currentGridAreas = `"title0 price0 actions0"`
+        var updatedGridAreas = currentGridAreas + bookGridArea.join('')
+
+        table.style.gridTemplateAreas = updatedGridAreas
+
+
+        var bookCSS = getBooks().map((book, idx) =>
+            `.title${idx + 1} { grid-area: title${idx + 1} }
+             .price${idx + 1} { grid-area: price${idx + 1} }
+             .actions${idx + 1} { grid-area: actions${idx + 1} }`
+        ).join('')
+
+
+        var styleSheet = document.createElement('style')
+        styleSheet.textContent = bookCSS
+
+        document.head.appendChild(styleSheet)
+    }
 }
 
-function injectedHTML(table) {
-    var injectedHTML = document.querySelectorAll('[data-idx]')
-    injectedHTML.forEach(element => element.remove())
 
-    var bookHTML = getBooks().map((book, idx) =>
-        `<div class="title title${idx + 1}" data-idx>${book.title}</div>
-         <div class="price price${idx + 1}" data-idx>${book.price}</div>
-         <div class="actions actions${idx + 1}" data-idx>
-            <div class="read read${idx + 1}" data-idx onclick="onDisplayBook(${book.id})">Read</div>
-            <div class="update update${idx + 1}" data-idx onclick="onUpdateBookTitle(${idx + 1}), onUpdateBookPrice(${idx + 1})">Update</div>
-            <div class="delete delete${idx + 1}" data-idx onclick="onDeleteBook('${book.title}')">Delete</div>
-     </div>`
-    )
-    table.insertAdjacentHTML('beforeend', bookHTML.join(''))
-}
-
-
-function injectCSS(table) {
-    var bookGridArea = getBooks().map((book, idx) =>
-        `"title${idx + 1} price${idx + 1} actions${idx + 1}"`
-    )
-
-    var currentGridAreas = `"title0 price0 actions0"`
-    var updatedGridAreas = currentGridAreas + bookGridArea.join('')
-
-    table.style.gridTemplateAreas = updatedGridAreas
-
-
-    var bookCSS = getBooks().map((book, idx) =>
-        `.title${idx + 1} { grid-area: title${idx + 1} }
-         .price${idx + 1} { grid-area: price${idx + 1} }
-         .actions${idx + 1} { grid-area: actions${idx + 1} }`
-    ).join('')
-
-
-    var styleSheet = document.createElement('style')
-    styleSheet.textContent = bookCSS
-
-    document.head.appendChild(styleSheet)
-}
 
 
 function onAddBook(event) {
     event.preventDefault()
 
-    var id = gBooks.length + 1
+    var bookArray = getBooks()
+    var id = bookArray.length + 1
 
     var input = document.querySelector('[placeholder="Add a book"]').value
-
     if (input === '') return displayMessage('Can\'t add blank title')
 
-    gBooks.push({ id, title: input, price: getRandomInt(1, 20) * 10 })
+    bookArray.push({ id, title: input, price: getRandomInt(1, 20) * 10 })
+    bookBackup.push({ id, title: input, price: getRandomInt(1, 20) * 10 })
 
-    saveToStorage('bookArray', gBooks)
+    var input = document.querySelector('[placeholder="Add a book"]').value = ''
+
+    saveToStorage('bookArray', bookArray)
     displayMessage('Book added!')
 
     renderTable()
 }
 
-function onDeleteBook(title) {
-    removeBook(title)
+function onDeleteBook(title, id) {
+    deleteBook(title, id)
     displayMessage('Book deleted!')
 
     renderTable()
 }
 
 
-function onUpdateBookTitle(idx) {
+function onUpdateBook(title, idx) {
 
-    const id = idx - 1
-    const elTitle = document.querySelector(`.title${idx}`)
+    var bookArray = getBooks()
+    var bookIdToUpdate = bookArray.findIndex(book => book.title === title)
+    var backupIdToUpdate = bookBackup.findIndex(book => book.id === idx)
 
-    function switchToInput(elTitle, id) {
+    onUpdateBookTitle(title, idx)
+    onUpdateBookPrice(title, bookIdToUpdate)
 
-        if (elTitle.tagName.toLowerCase() === 'input') {
-            return
+    function onUpdateBookTitle() {
+
+        const elTitle = document.querySelector(`.title${bookIdToUpdate + 1}`)
+
+        function switchToInput(elTitle, bookIdToUpdate) {
+
+            if (elTitle.tagName.toLowerCase() === 'input') {
+                return
+            }
+
+            var input = document.createElement('input')
+            input.classList.add('title', `title${bookIdToUpdate + 1}`)
+            input.value = elTitle.innerText
+
+            elTitle.replaceWith(input)
+            input.focus()
+
+            input.onkeydown = (enter) => { if (enter.key === 'Enter') switchToDiv(elTitle, input, bookIdToUpdate) }
+        }
+        function switchToDiv(elTitle, input, bookIdToUpdate) {
+
+            elTitle.innerText = input.value
+            bookArray[bookIdToUpdate].title = input.value
+            bookBackup[backupIdToUpdate].title = input.value
+
+            saveToStorage('bookArray', bookArray)
+            displayMessage('Title updated!')
+
+            input.replaceWith(elTitle)
         }
 
-        var input = document.createElement('input')
-        input.classList.add('title', `title${idx}`)
-        input.value = elTitle.innerText
-        input.onkeydown = (enter) => { if (enter.key === 'Enter') switchToDiv(elTitle, input, id) }
-
-        elTitle.replaceWith(input)
-        input.focus()
-    }
-    function switchToDiv(elTitle, input, id) {
-        elTitle.innerText = input.value
-        gBooks[id].title = input.value
-        saveToStorage('bookArray', gBooks)
-        displayMessage('Title updated!')
-
-        input.replaceWith(elTitle)
+        switchToInput(elTitle, bookIdToUpdate)
     }
 
-    switchToInput(elTitle, id)
+    function onUpdateBookPrice() {
 
-    saveToStorage('bookArray', gBooks)
-}
+        const elPrice = document.querySelector(`.price${bookIdToUpdate + 1}`)
 
-function onUpdateBookPrice(idx) {
+        function switchToInput(elPrice, bookIdToUpdate) {
 
-    const id = idx - 1
-    const elPrice = document.querySelector(`.price${idx}`)
+            if (elPrice.tagName.toLowerCase() === 'input') {
+                return
+            }
 
-    function switchToInput(elPrice, id) {
+            var input = document.createElement('input')
+            input.classList.add('price', `price${bookIdToUpdate + 1}`)
+            input.value = elPrice.innerText
+            input.onkeydown = (enter) => { if (enter.key === 'Enter') switchToDiv(elPrice, input, bookIdToUpdate) }
 
-        if (elPrice.tagName.toLowerCase() === 'input') {
-            return
+            elPrice.replaceWith(input)
+            input.focus()
+        }
+        function switchToDiv(elPrice, input, bookIdToUpdate) {
+
+            elPrice.innerText = input.value
+            bookArray[bookIdToUpdate].price = input.value
+            bookBackup[backupIdToUpdate].price = input.value
+
+            saveToStorage('bookArray', bookArray)
+            displayMessage('Price updated!')
+
+            input.replaceWith(elPrice)
         }
 
-        var input = document.createElement('input')
-        input.classList.add('price', `price${idx}`)
-        input.value = elPrice.innerText
-        input.onkeydown = (enter) => { if (enter.key === 'Enter') switchToDiv(elPrice, input, id) }
-
-        elPrice.replaceWith(input)
-        input.focus()
+        switchToInput(elPrice, bookIdToUpdate)
     }
-    function switchToDiv(elPrice, input, id) {
-        elPrice.innerText = input.value
-        gBooks[id].price = input.value
-        saveToStorage('bookArray', gBooks)
-        displayMessage('Price updated!')
-
-        input.replaceWith(elPrice)
-    }
-
-    switchToInput(elPrice, id)
 }
+
+
 
 function onDisplayBook(elBtn) {
     var modalOverlay = document.querySelector('.modal-overlay')
@@ -173,4 +193,15 @@ function displayMessage(message) {
     messageInterval = setTimeout(() => {
         messageModal.style.visibility = 'hidden'
     }, 1000);
+}
+
+
+function onFilterBooks(event) {
+    event.preventDefault()
+
+    var input = document.querySelector('[placeholder="Filter books"]').value.toLowerCase()
+
+    filterBooks(input)
+
+    renderTable()
 }

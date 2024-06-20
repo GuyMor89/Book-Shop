@@ -12,7 +12,11 @@
     <h1>Book Shop</h1>
     <div class="message"></div>
 
-    <form onsubmit="onAddBook(event)" class="form">
+    <form class="filter-books-form">
+        <input type="text" oninput="onFilterBooks(event)" placeholder="Filter books">
+    </form>
+
+    <form onsubmit="onAddBook(event)" class="add-book-form">
         <input type="text" placeholder="Add a book">
         <button>Add</button>
     </form>

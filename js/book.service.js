@@ -1,7 +1,7 @@
 'use strict'
 
 
-function loadDemoData() {
+function loadData() {
 
     const demoBooks = [
         {
@@ -20,34 +20,43 @@ function loadDemoData() {
             price: 90
         }
     ]
-
-    if (!loadFromStorage('bookArray').length > 0) saveToStorage('bookArray', demoBooks)
+    if (loadFromStorage('bookArray') === undefined
+        || loadFromStorage('bookArray').length === 0) {
+        saveToStorage('bookArray', demoBooks)
+    }
     return loadFromStorage('bookArray')
 }
 
 
-var gBooks = loadDemoData()
-
 function getBooks() {
-    return gBooks
+    return loadData()
 }
 
 
-function removeBook(title) {
-    var bookIdToRemove = getBooks().findIndex((book) => book.title === title)
-    if (bookIdToRemove > -1) getBooks().splice(bookIdToRemove, 1)
+function deleteBook(title, id) {
 
-    saveToStorage('bookArray', gBooks)
+    var bookArray = getBooks()
+    var bookIdToRemove = bookArray.findIndex(book => book.title === title)
+    var backupIdToRemove = bookBackup.findIndex(book => book.id === id)
+
+    if (bookIdToRemove > -1 && backupIdToRemove > -1) {
+        bookArray.splice(bookIdToRemove, 1)
+        bookBackup.splice(backupIdToRemove, 1)
+    }
+
+    saveToStorage('bookArray', bookArray)
 }
 
 
-function saveToStorage(key, value) {
-    var valueString = JSON.stringify(value)
-    localStorage.setItem(key, valueString)
+var bookBackup = getBooks()
+
+function filterBooks(title) {
+
+    var filteredBooks = getBooks().filter(book => book.title.toLowerCase().includes(title))
+
+    if (!title) filteredBooks = bookBackup
+
+    saveToStorage('bookArray', filteredBooks)
 }
 
-function loadFromStorage(key) {
-    var valueString = localStorage.getItem(key)
-    return JSON.parse(valueString)
-}
 
