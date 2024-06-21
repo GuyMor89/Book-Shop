@@ -1,8 +1,34 @@
 'use strict'
 
 function onInit() {
+    if (getBooks().length === 0) return emptyTable()
+
     renderTable()
+
+    onDisplayStats()
 }
+
+
+function emptyTable() {
+    var table = document.querySelector('.table')
+
+    var injectedHTML = document.querySelectorAll('[data-idx]')
+    injectedHTML.forEach(element => element.remove())
+
+    var emptyHTML =
+        `<div class="empty" data-idx>No matching books were found..</div>
+    <div class="demo" onclick="loadDemoData()" data-idx>Return Demo Books</div>`
+
+    table.insertAdjacentHTML('beforeend', emptyHTML)
+
+    var emptyGridArea = `"empty empty empty" "demo demo demo"`
+
+    var currentGridAreas = `"title0 price0 actions0"`
+    var updatedGridAreas = currentGridAreas + emptyGridArea
+
+    table.style.gridTemplateAreas = updatedGridAreas
+}
+
 
 function renderTable() {
     var table = document.querySelector('.table')
@@ -80,6 +106,8 @@ function onDeleteBook(title, id) {
     displayMessage('Book deleted!')
 
     renderTable()
+
+    if (getBooks().length === 0) return emptyTable()
 }
 
 
@@ -139,16 +167,17 @@ function onUpdateBook(title, idx) {
             var input = document.createElement('input')
             input.classList.add('price', `price${bookIdToUpdate + 1}`)
             input.value = elPrice.innerText
-            input.onkeydown = (enter) => { if (enter.key === 'Enter') switchToDiv(elPrice, input, bookIdToUpdate) }
 
             elPrice.replaceWith(input)
             input.focus()
+
+            input.onkeydown = (enter) => { if (enter.key === 'Enter') switchToDiv(elPrice, input, bookIdToUpdate) }
         }
         function switchToDiv(elPrice, input, bookIdToUpdate) {
 
-            elPrice.innerText = input.value
-            bookArray[bookIdToUpdate].price = input.value
-            bookBackup[backupIdToUpdate].price = input.value
+            elPrice.innerText = +input.value
+            bookArray[bookIdToUpdate].price = +input.value
+            bookBackup[backupIdToUpdate].price = +input.value
 
             saveToStorage('bookArray', bookArray)
             displayMessage('Price updated!')
@@ -203,5 +232,34 @@ function onFilterBooks(event) {
 
     filterBooks(input)
 
+    if (getBooks().length === 0) return emptyTable()
+
     renderTable()
+}
+
+function onDisplayStats() {
+    var statsFooter = document.querySelector('.stats-footer')
+
+    var bookPrices = getBooks().reduce((accu, book) => {
+        if (!accu['cheap']) accu['cheap'] = []
+        if (book.price < 80) {
+            accu['cheap'].push(book.price)
+        }
+        if (!accu['midrange']) accu['midrange'] = []
+        if (book.price > 80 && book.price < 200) {
+            accu['midrange'].push(book.price)
+        }
+        if (!accu['expensive']) accu['expensive'] = []
+        if (book.price > 200) {
+            accu['expensive'].push(book.price)
+        }
+        return accu
+    }, {})
+
+    statsFooter.innerHTML = 
+    `<div class="stats-container">
+     <div class="expensive">Expensive Books: ${bookPrices.expensive.length}</div> 
+     <div class="midrange">Midrange Books: ${bookPrices.midrange.length}</div>
+     <div class="cheap">Cheap Books: ${bookPrices.cheap.length}</div>
+     </div>`
 }

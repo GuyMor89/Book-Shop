@@ -2,6 +2,10 @@
     box-sizing: border-box;
 }
 
+html {
+    height: 100vh;
+}
+
 body {
     display: grid;
     grid-template-rows: auto auto 1fr;
@@ -31,6 +35,7 @@ h1 {
 
     background-color: rgba(255, 255, 255, 0.900);
     color: rgb(26, 26, 26);
+    -webkit-text-stroke: 2px rgba(0, 0, 0, 0.429);
     box-shadow:
     0 0 10px 10px rgba(255, 255, 255, 0.300);
 
@@ -79,12 +84,17 @@ h1 {
 
 
 
-.filter-book-form {
+.filter-books-form {
     grid-area: filter-books;
+    justify-self: flex-end;
+    margin-inline-end: 25px;
 }
 
 .add-book-form {
     grid-area: add-book;
+    justify-self: flex-start;
+    margin-inline-start: 25px;
+
 }
 
 form input {
@@ -135,6 +145,26 @@ button {
 
 
 
+.empty {
+    grid-area: empty;
+    
+    background-color: white;
+    text-align: center;
+    padding-top: 15px;
+    height: 50px;
+}
+
+.demo {
+    grid-area: demo;
+
+    color: #175371;
+    text-align: center;
+    padding: 5px;
+
+    cursor: pointer;
+}
+
+
 
 .title {
     padding-inline-start: 5px;
@@ -152,9 +182,14 @@ button {
 .title0,
 .price0,
 .actions0 {
+    justify-content: center;
+
     font-weight: bolder;
     font-size: 1.1em;
-    justify-content: center;
+    -webkit-text-stroke: 1px rgba(0, 0, 0, 0.429);
+
+    height: 25px;
+
 }
 
 
@@ -166,12 +201,15 @@ button {
 
 .title {
     grid-area: title;
+    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.829);
+
 }
 
 .actions {
     display: flex;
     gap: 5px;
     grid-area: actions;
+    -webkit-text-stroke: 0.3px rgba(0, 0, 0, 1.029);
 
     justify-content: center;
 }
@@ -249,4 +287,47 @@ input.title {
 
 .actions0 {
     grid-area: actions0;
+}
+
+
+
+.stats-footer {
+    position: absolute;
+
+    display: fixed;
+    bottom: 0px;
+
+    height: 18px;
+    width: 100vw;
+    background-color: rgba(250, 255, 204, 0.579);
+    color: rgba(0, 0, 0, 0.234);
+    -webkit-text-stroke: 1px rgba(0, 0, 0, 0.829);
+
+    text-align: center;
+    font-size: 0.85em;
+}
+
+.stats-container {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr 1fr;
+
+    grid-template-areas: 
+    "expensive midrange cheap";
+}
+
+
+.expensive {
+    grid-area: expensive;
+    justify-self: flex-end;
+}
+
+.midrange {
+    grid-area: midrange;
+}
+
+.cheap {
+    grid-area: cheap;
+    justify-self: flex-start;
+
 }

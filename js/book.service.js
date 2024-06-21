@@ -1,7 +1,7 @@
 'use strict'
 
 
-function loadData() {
+function loadDemoData() {
 
     const demoBooks = [
         {
@@ -20,16 +20,15 @@ function loadData() {
             price: 90
         }
     ]
-    if (loadFromStorage('bookArray') === undefined
-        || loadFromStorage('bookArray').length === 0) {
         saveToStorage('bookArray', demoBooks)
-    }
-    return loadFromStorage('bookArray')
+        bookBackup = getBooks()
+        renderTable()
 }
 
+var bookBackup = getBooks()
 
 function getBooks() {
-    return loadData()
+    return loadFromStorage('bookArray')
 }
 
 
@@ -39,16 +38,17 @@ function deleteBook(title, id) {
     var bookIdToRemove = bookArray.findIndex(book => book.title === title)
     var backupIdToRemove = bookBackup.findIndex(book => book.id === id)
 
+    console.log(bookBackup);
+
     if (bookIdToRemove > -1 && backupIdToRemove > -1) {
         bookArray.splice(bookIdToRemove, 1)
         bookBackup.splice(backupIdToRemove, 1)
     }
 
     saveToStorage('bookArray', bookArray)
+    bookBackup = getBooks()
 }
 
-
-var bookBackup = getBooks()
 
 function filterBooks(title) {
 
@@ -57,6 +57,8 @@ function filterBooks(title) {
     if (!title) filteredBooks = bookBackup
 
     saveToStorage('bookArray', filteredBooks)
+    console.log(getBooks());
+
 }
 
 
