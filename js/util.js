@@ -16,3 +16,4 @@ function loadFromStorage(key) {
     if (valueString === 'undefined' || valueString === null) return undefined
     return JSON.parse(valueString)
 }
+

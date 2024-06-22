@@ -57,8 +57,31 @@ function filterBooks(title) {
     if (!title) filteredBooks = bookBackup
 
     saveToStorage('bookArray', filteredBooks)
-    console.log(getBooks());
-
 }
 
 
+function sortBooksByTitle(direction) {
+
+    var booksSortedDown = getBooks().sort((a, b) => b.title.localeCompare(a.title))
+    var booksSortedUp = getBooks().sort((a, b) => a.title.localeCompare(b.title))
+
+    var sortedBooks = direction === 'down' ? booksSortedDown : booksSortedUp
+
+    saveToStorage('bookArray', sortedBooks)
+    bookBackup = getBooks()
+
+    renderTable()
+}
+
+function sortBooksByPrice(direction) {
+
+    var booksSortedDown = getBooks().sort((a, b) => b.price - a.price)
+    var booksSortedUp = getBooks().sort((a, b) => a.price - b.price)
+
+    var sortedBooks = direction === 'down' ? booksSortedDown : booksSortedUp
+
+    saveToStorage('bookArray', sortedBooks)
+    bookBackup = getBooks()
+
+    renderTable()
+}

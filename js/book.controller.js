@@ -87,13 +87,13 @@ function onAddBook(event) {
     var bookArray = getBooks()
     var id = bookArray.length + 1
 
-    var input = document.querySelector('[placeholder="Add a book"]').value
+    var input = document.querySelector('[placeholder="Type a title.."]').value
     if (input === '') return displayMessage('Can\'t add blank title')
 
     bookArray.push({ id, title: input, price: getRandomInt(1, 20) * 10 })
     bookBackup.push({ id, title: input, price: getRandomInt(1, 20) * 10 })
 
-    var input = document.querySelector('[placeholder="Add a book"]').value = ''
+    var input = document.querySelector('[placeholder="Type a title.."]').value = ''
 
     saveToStorage('bookArray', bookArray)
     displayMessage('Book added!')
@@ -191,16 +191,24 @@ function onUpdateBook(title, idx) {
 
 
 
-function onDisplayBook(elBtn) {
+function onDisplayBook(idx) {
+    imageArray.length = 0
+
     var modalOverlay = document.querySelector('.modal-overlay')
     modalOverlay.style.display = 'block'
 
-    var bookToDisplay = getBooks().find(book => book.id === elBtn)
+    var bookToDisplay = getBooks().find(book => book.id === idx)
+    logImageUrl(bookToDisplay.title)
 
-    var modal = document.querySelector('.modal')
-    modal.innerHTML = `<span>Book Title:</span> ${bookToDisplay.title}<br>
-                       <span>Book Price:</span> ${bookToDisplay.price}<br>
-                       <span>Book ID:</span> ${bookToDisplay.id}`
+    setTimeout(() => {
+        var bookImageSrc = imageArray[0]
+
+        var modal = document.querySelector('.modal')
+        modal.innerHTML = `<div class="modal-img"><img src=${bookImageSrc}></div>
+                           <div class="modal-title">Book Title: ${bookToDisplay.title}</div> 
+                           <div class="modal-price">Book Price: ${bookToDisplay.price}</div>`
+    }, 500);
+
 }
 
 window.onclick = function (event) {
@@ -228,7 +236,7 @@ function displayMessage(message) {
 function onFilterBooks(event) {
     event.preventDefault()
 
-    var input = document.querySelector('[placeholder="Filter books"]').value.toLowerCase()
+    var input = document.querySelector('[placeholder="Type to search.."]').value.toLowerCase()
 
     filterBooks(input)
 
@@ -256,10 +264,11 @@ function onDisplayStats() {
         return accu
     }, {})
 
-    statsFooter.innerHTML = 
-    `<div class="stats-container">
+    statsFooter.innerHTML =
+        `<div class="stats-container">
      <div class="expensive">Expensive Books: ${bookPrices.expensive.length}</div> 
      <div class="midrange">Midrange Books: ${bookPrices.midrange.length}</div>
      <div class="cheap">Cheap Books: ${bookPrices.cheap.length}</div>
      </div>`
 }
+

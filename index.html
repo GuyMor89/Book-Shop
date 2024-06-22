@@ -13,18 +13,26 @@
     <div class="message"></div>
 
     <form class="filter-books-form">
-        <input type="text" oninput="onFilterBooks(event)" placeholder="Filter books">
+        <span>Filter Books:</span>
+        <input type="text" oninput="onFilterBooks(event)" placeholder="Type to search..">
     </form>
 
     <form onsubmit="onAddBook(event)" class="add-book-form">
-        <input type="text" placeholder="Add a book">
+        <span>Add Books:</span>
+        <input type="text" placeholder="Type a title..">
         <button>Add</button>
     </form>
 
     <div class="table">
 
-        <div class="title title0">Title</div>
-        <div class="price price0">Price</div>
+        <div class="title title0">Title
+            <span class="sort-up" onclick="sortBooksByTitle('up')">🡅</span>
+            <span class="sort-down" onclick="sortBooksByTitle('down')">🡇</span>
+        </div>
+        <div class="price price0">Price
+            <span class="sort-up" onclick="sortBooksByPrice('up')">🡅</span>
+            <span class="sort-down" onclick="sortBooksByPrice('down')">🡇</span>
+        </div>
         <div class="actions actions0">Actions</div>
 
     </div>
@@ -36,8 +44,11 @@
     <div class="stats-footer"></div>
 
     <script src="js/util.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="js/imageSearch.js"></script>
     <script src="js/book.service.js"></script>
     <script src="js/book.controller.js"></script>
+
 </body>
 
 </html>
