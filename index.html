@@ -14,24 +14,24 @@
 
     <form class="filter-books-form">
         <span>Filter Books:</span>
-        <input type="text" oninput="onFilterBooks(event)" placeholder="Type to search..">
+        <input type="text" oninput="onFilterBooks(this.value, event)" placeholder="Type to search..">
     </form>
 
     <form onsubmit="onAddBook(event)" class="add-book-form">
         <span>Add Books:</span>
-        <input type="text" placeholder="Type a title..">
+        <input type="text" class="add-book-input" placeholder="Type a title..">
         <button>Add</button>
     </form>
 
     <div class="table">
 
         <div class="title title0">Title
-            <span class="sort-up" onclick="sortBooksByTitle('up')">🡅</span>
-            <span class="sort-down" onclick="sortBooksByTitle('down')">🡇</span>
+            <span class="sort-up" onclick="onSortBooks('title', 1)">🡅</span>
+            <span class="sort-down" onclick="onSortBooks('title', -1)">🡇</span>
         </div>
         <div class="price price0">Price
-            <span class="sort-up" onclick="sortBooksByPrice('up')">🡅</span>
-            <span class="sort-down" onclick="sortBooksByPrice('down')">🡇</span>
+            <span class="sort-up" onclick="onSortBooks('price', 1)">🡅</span>
+            <span class="sort-down" onclick="onSortBooks('price', -1)">🡇</span>
         </div>
         <div class="actions actions0">Actions</div>
 

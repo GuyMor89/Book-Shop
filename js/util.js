@@ -17,3 +17,9 @@ function loadFromStorage(key) {
     return JSON.parse(valueString)
 }
 
+function capitalizeInput(text) {
+    const capitalizedText = text.replace(/\b\w/g, function (char) {
+        return char.toUpperCase()
+    })
+    return capitalizedText
+}

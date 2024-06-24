@@ -1,87 +1,66 @@
 'use strict'
 
 
-function loadDemoData() {
-
+function loadBooks() {
     const demoBooks = [
         {
             id: 1,
             title: 'Harry Potter',
-            price: 120
+            price: 120,
+            image: 'https://play-lh.googleusercontent.com/xo2HfLoAszntYndTjrUhZXqa7xCmeSkSXxcsPPeQx3-cRrzYSGmbjSwKO2F7o-RWuJhy=w240-h480-rw'
         },
         {
             id: 2,
             title: 'Flowers for Algernon',
-            price: 75
+            price: 75,
+            image: 'https://m.media-amazon.com/images/I/81HntONlwgL._AC_UF1000,1000_QL80_.jpg'
         },
         {
             id: 3,
             title: 'Persuasion',
-            price: 90
+            price: 90,
+            image: 'https://m.media-amazon.com/images/M/MV5BZDg3MzdiYjAtZWQ0MC00MDY4LWE5ZWEtNjliNTE3ZDZjNTU3XkEyXkFqcGdeQXVyMTAyMjQ3NzQ1._V1_.jpg'
         }
     ]
+
+    if (loadFromStorage('bookArray') === undefined ||
+        loadFromStorage('bookArray').length === 0)
         saveToStorage('bookArray', demoBooks)
-        bookBackup = getBooks()
-        renderTable()
+
+    var bookArray = loadFromStorage('bookArray')
+    return bookArray
 }
 
-var bookBackup = getBooks()
+var gBooks = loadBooks()
+
 
 function getBooks() {
-    return loadFromStorage('bookArray')
+    var bookArray = gBooks
+
+    bookArray = bookArray.filter(book => book.title.toLowerCase().includes(filterBy))
+
+    bookArray = bookArray.sort((a, b) => (b.price - a.price) * sortBy.price)
+    bookArray = bookArray.sort((a, b) => (b.title.localeCompare(a.title)) * sortBy.title)
+
+    return bookArray
 }
 
+function deleteBook(title) {
 
-function deleteBook(title, id) {
-
-    var bookArray = getBooks()
+    var bookArray = gBooks
     var bookIdToRemove = bookArray.findIndex(book => book.title === title)
-    var backupIdToRemove = bookBackup.findIndex(book => book.id === id)
 
-    console.log(bookBackup);
-
-    if (bookIdToRemove > -1 && backupIdToRemove > -1) {
-        bookArray.splice(bookIdToRemove, 1)
-        bookBackup.splice(backupIdToRemove, 1)
-    }
+    if (bookIdToRemove > -1) bookArray.splice(bookIdToRemove, 1)
 
     saveToStorage('bookArray', bookArray)
-    bookBackup = getBooks()
 }
 
+function addBook(input) {
+    var bookArray = gBooks
+    var id = bookArray[bookArray.length - 1].id + 1
 
-function filterBooks(title) {
+    bookArray.push({ id, title: capitalizeInput(input.value), price: getRandomInt(1, 20) * 15, image: image.src })
 
-    var filteredBooks = getBooks().filter(book => book.title.toLowerCase().includes(title))
-
-    if (!title) filteredBooks = bookBackup
-
-    saveToStorage('bookArray', filteredBooks)
+    saveToStorage('bookArray', bookArray)
 }
 
-
-function sortBooksByTitle(direction) {
-
-    var booksSortedDown = getBooks().sort((a, b) => b.title.localeCompare(a.title))
-    var booksSortedUp = getBooks().sort((a, b) => a.title.localeCompare(b.title))
-
-    var sortedBooks = direction === 'down' ? booksSortedDown : booksSortedUp
-
-    saveToStorage('bookArray', sortedBooks)
-    bookBackup = getBooks()
-
-    renderTable()
-}
-
-function sortBooksByPrice(direction) {
-
-    var booksSortedDown = getBooks().sort((a, b) => b.price - a.price)
-    var booksSortedUp = getBooks().sort((a, b) => a.price - b.price)
-
-    var sortedBooks = direction === 'down' ? booksSortedDown : booksSortedUp
-
-    saveToStorage('bookArray', sortedBooks)
-    bookBackup = getBooks()
-
-    renderTable()
-}

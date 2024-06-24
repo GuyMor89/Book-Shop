@@ -1,11 +1,14 @@
 'use strict'
 
-function onInit() {
-    if (getBooks().length === 0) return emptyTable()
 
+var filterBy = []
+var sortBy = { title: 0, price: 0 }
+
+
+function onInit() {
     renderTable()
 
-    onDisplayStats()
+    displayStats()
 }
 
 
@@ -16,12 +19,11 @@ function emptyTable() {
     injectedHTML.forEach(element => element.remove())
 
     var emptyHTML =
-        `<div class="empty" data-idx>No matching books were found..</div>
-    <div class="demo" onclick="loadDemoData()" data-idx>Return Demo Books</div>`
+        `<div class="empty" data-idx>No matching books were found..</div>`
 
     table.insertAdjacentHTML('beforeend', emptyHTML)
 
-    var emptyGridArea = `"empty empty empty" "demo demo demo"`
+    var emptyGridArea = `"empty empty empty"`
 
     var currentGridAreas = `"title0 price0 actions0"`
     var updatedGridAreas = currentGridAreas + emptyGridArea
@@ -41,12 +43,12 @@ function renderTable() {
         injectedHTML.forEach(element => element.remove())
 
         var bookHTML = getBooks().map((book, idx) =>
-            `<div class="title title${idx + 1}" data-idx>${book.title}</div>
-             <div class="price price${idx + 1}" data-idx>${book.price}</div>
-             <div class="actions actions${idx + 1}" data-idx>
-                <div class="read read${idx + 1}" data-idx onclick="onDisplayBook(${book.id})">Read</div>
-                <div class="update update${idx + 1}" data-idx onclick="onUpdateBook('${book.title}', ${book.id})">Update</div>
-                <div class="delete delete${idx + 1}" data-idx onclick="onDeleteBook('${book.title}', ${book.id})">Delete</div>
+            `<div class="title title${book.id}" data-idx>${book.title}</div>
+             <div class="price price${book.id}" data-idx>${book.price}</div>
+             <div class="actions actions${book.id}" data-idx>
+                <div class="read read${book.id}" data-idx onclick="onDisplayBook(${book.id})">Read</div>
+                <div class="update update${book.id}" data-idx onclick="onUpdateBook('${book.title}')">Update</div>
+                <div class="delete delete${book.id}" data-idx onclick="onDeleteBook('${book.title}')">Delete</div>
          </div>`
         )
         table.insertAdjacentHTML('beforeend', bookHTML.join(''))
@@ -55,7 +57,7 @@ function renderTable() {
 
     function injectCSS(table) {
         var bookGridArea = getBooks().map((book, idx) =>
-            `"title${idx + 1} price${idx + 1} actions${idx + 1}"`
+            `"title${book.id} price${book.id} actions${book.id}"`
         )
 
         var currentGridAreas = `"title0 price0 actions0"`
@@ -65,9 +67,9 @@ function renderTable() {
 
 
         var bookCSS = getBooks().map((book, idx) =>
-            `.title${idx + 1} { grid-area: title${idx + 1} }
-             .price${idx + 1} { grid-area: price${idx + 1} }
-             .actions${idx + 1} { grid-area: actions${idx + 1} }`
+            `.title${book.id} { grid-area: title${book.id} }
+             .price${book.id} { grid-area: price${book.id} }
+             .actions${book.id} { grid-area: actions${book.id} }`
         ).join('')
 
 
@@ -79,30 +81,35 @@ function renderTable() {
 }
 
 
+function onSortBooks(type, direction) {
+    sortBy[type] = direction
+    console.log(sortBy);
+
+    renderTable()
+}
 
 
 function onAddBook(event) {
     event.preventDefault()
 
-    var bookArray = getBooks()
-    var id = bookArray.length + 1
+    var input = document.querySelector('[placeholder="Type a title.."]')
+    if (input.value === '') return displayMessage('Can\'t add blank title')
 
-    var input = document.querySelector('[placeholder="Type a title.."]').value
-    if (input === '') return displayMessage('Can\'t add blank title')
+    getImageSrc(input.value)
 
-    bookArray.push({ id, title: input, price: getRandomInt(1, 20) * 10 })
-    bookBackup.push({ id, title: input, price: getRandomInt(1, 20) * 10 })
+    setTimeout(() => {
+        addBook(input)
 
-    var input = document.querySelector('[placeholder="Type a title.."]').value = ''
+        input.value = ''
 
-    saveToStorage('bookArray', bookArray)
-    displayMessage('Book added!')
+        displayMessage('Book added!')
 
-    renderTable()
+        renderTable()
+    }, 1000)
 }
 
-function onDeleteBook(title, id) {
-    deleteBook(title, id)
+function onDeleteBook(title) {
+    deleteBook(title)
     displayMessage('Book deleted!')
 
     renderTable()
@@ -111,18 +118,18 @@ function onDeleteBook(title, id) {
 }
 
 
-function onUpdateBook(title, idx) {
-
-    var bookArray = getBooks()
+function onUpdateBook(title) {
+    var bookArray = gBooks
     var bookIdToUpdate = bookArray.findIndex(book => book.title === title)
-    var backupIdToUpdate = bookBackup.findIndex(book => book.id === idx)
 
-    onUpdateBookTitle(title, idx)
-    onUpdateBookPrice(title, bookIdToUpdate)
+    UpdateBookTitle()
+    UpdateBookPrice()
 
-    function onUpdateBookTitle() {
+    function UpdateBookTitle() {
 
-        const elTitle = document.querySelector(`.title${bookIdToUpdate + 1}`)
+        const elTitle = document.querySelector(`.title${bookArray[bookIdToUpdate].id}`)
+
+        switchToInput(elTitle, bookIdToUpdate)
 
         function switchToInput(elTitle, bookIdToUpdate) {
 
@@ -131,7 +138,7 @@ function onUpdateBook(title, idx) {
             }
 
             var input = document.createElement('input')
-            input.classList.add('title', `title${bookIdToUpdate + 1}`)
+            input.classList.add('title', `title${bookArray[bookIdToUpdate].id}`)
             input.value = elTitle.innerText
 
             elTitle.replaceWith(input)
@@ -141,22 +148,27 @@ function onUpdateBook(title, idx) {
         }
         function switchToDiv(elTitle, input, bookIdToUpdate) {
 
-            elTitle.innerText = input.value
-            bookArray[bookIdToUpdate].title = input.value
-            bookBackup[backupIdToUpdate].title = input.value
+            elTitle.innerText = capitalizeInput(input.value)
+            bookArray[bookIdToUpdate].title = capitalizeInput(input.value)
+            getImageSrc(input.value)
 
-            saveToStorage('bookArray', bookArray)
-            displayMessage('Title updated!')
+            setTimeout(() => {
+                bookArray[bookIdToUpdate].image = image.src
+                saveToStorage('bookArray', bookArray)
+                displayMessage('Title updated!')
 
-            input.replaceWith(elTitle)
+                input.replaceWith(elTitle)
+                renderTable()
+                if (getBooks().length === 0) return emptyTable()
+            }, 1000);
         }
-
-        switchToInput(elTitle, bookIdToUpdate)
     }
 
-    function onUpdateBookPrice() {
+    function UpdateBookPrice() {
 
-        const elPrice = document.querySelector(`.price${bookIdToUpdate + 1}`)
+        const elPrice = document.querySelector(`.price${bookArray[bookIdToUpdate].id}`)
+
+        switchToInput(elPrice, bookIdToUpdate)
 
         function switchToInput(elPrice, bookIdToUpdate) {
 
@@ -165,7 +177,7 @@ function onUpdateBook(title, idx) {
             }
 
             var input = document.createElement('input')
-            input.classList.add('price', `price${bookIdToUpdate + 1}`)
+            input.classList.add('price', `price${bookArray[bookIdToUpdate].id}`)
             input.value = elPrice.innerText
 
             elPrice.replaceWith(input)
@@ -177,37 +189,32 @@ function onUpdateBook(title, idx) {
 
             elPrice.innerText = +input.value
             bookArray[bookIdToUpdate].price = +input.value
-            bookBackup[backupIdToUpdate].price = +input.value
 
             saveToStorage('bookArray', bookArray)
             displayMessage('Price updated!')
 
             input.replaceWith(elPrice)
         }
-
-        switchToInput(elPrice, bookIdToUpdate)
     }
 }
 
 
 
 function onDisplayBook(idx) {
-    imageArray.length = 0
-
     var modalOverlay = document.querySelector('.modal-overlay')
     modalOverlay.style.display = 'block'
 
-    var bookToDisplay = getBooks().find(book => book.id === idx)
-    logImageUrl(bookToDisplay.title)
+    var bookToDisplay = gBooks.find(book => book.id === idx)
 
-    setTimeout(() => {
-        var bookImageSrc = imageArray[0]
+    var bookImageSrc = bookToDisplay.image
 
-        var modal = document.querySelector('.modal')
-        modal.innerHTML = `<div class="modal-img"><img src=${bookImageSrc}></div>
-                           <div class="modal-title">Book Title: ${bookToDisplay.title}</div> 
-                           <div class="modal-price">Book Price: ${bookToDisplay.price}</div>`
-    }, 500);
+    var modal = document.querySelector('.modal')
+    modal.innerHTML = `<div class="modal-img"><img src=${bookImageSrc}></div>
+                           <div class="title-header">Book Title:</div>
+                           <div class="title-content">${bookToDisplay.title}</div>
+                           <div class="price-header">Book Price:</div>
+                           <div class="price-content">${bookToDisplay.price}</div>`
+
 
 }
 
@@ -217,6 +224,7 @@ window.onclick = function (event) {
         modal.style.display = 'none'
     }
 }
+
 
 var messageInterval
 
@@ -233,24 +241,23 @@ function displayMessage(message) {
 }
 
 
-function onFilterBooks(event) {
+function onFilterBooks(inputVal, event) {
     event.preventDefault()
 
-    var input = document.querySelector('[placeholder="Type to search.."]').value.toLowerCase()
-
-    filterBooks(input)
+    filterBy = inputVal.toLowerCase()
 
     if (getBooks().length === 0) return emptyTable()
 
     renderTable()
 }
 
-function onDisplayStats() {
+
+function displayStats() {
     var statsFooter = document.querySelector('.stats-footer')
 
     var bookPrices = getBooks().reduce((accu, book) => {
         if (!accu['cheap']) accu['cheap'] = []
-        if (book.price < 80) {
+        if (book.price <= 80) {
             accu['cheap'].push(book.price)
         }
         if (!accu['midrange']) accu['midrange'] = []
@@ -258,7 +265,7 @@ function onDisplayStats() {
             accu['midrange'].push(book.price)
         }
         if (!accu['expensive']) accu['expensive'] = []
-        if (book.price > 200) {
+        if (book.price >= 200) {
             accu['expensive'].push(book.price)
         }
         return accu
