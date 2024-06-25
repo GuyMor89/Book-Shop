@@ -40,10 +40,13 @@ var gBooks = loadBooks()
 function getBooks() {
     var bookArray = gBooks
 
-    bookArray = bookArray.filter(book => book.title.toLowerCase().includes(filterBy))
+    bookArray = bookArray.filter(book => book.title.toLowerCase().includes(filterBy.title))
+    bookArray = bookArray.filter(book => book.price > filterBy.price)
+    bookArray = bookArray.filter(book => book.rating > filterBy.stars)
 
     bookArray = bookArray.sort((a, b) => (b.price - a.price) * sortBy.price)
     bookArray = bookArray.sort((a, b) => (b.title.localeCompare(a.title)) * sortBy.title)
+    bookArray = bookArray.sort((a, b) => (b.rating - a.rating) * sortBy.rating)
 
     return bookArray
 }

@@ -12,10 +12,21 @@
     <h1>Book Shop</h1>
     <div class="message"></div>
 
-    <form class="filter-books-form">
-        <span>Filter Books:</span>
-        <input type="text" oninput="onFilterBooks(this.value, event)" placeholder="Type to search..">
-    </form>
+    <fieldset>
+        <legend>Filter Books:</legend>
+        <div class="fieldset-container">
+            <!-- <form class="filter-books-form"></form> -->
+            <span class="header-title">Filter by title:</span>
+            <input class="input-title" type="text" oninput="onFilterBooks('title',this.value)" placeholder="Type to search..">
+            <!-- <div class="filter-price"> </div> -->
+            <span class="header-price">Price:</span>
+            <input class="input-price" type="range" min="0" max="250" value="0" oninput="onFilterBooks('price',this.value)">
+            <!-- <div class="filter-stars"> </div> -->
+            <span class="header-stars">Star Rating:</span>
+            <input class="input-stars" type="range" min="0" max="4" value="0" oninput="onFilterBooks('stars',this.value)">
+        </div>
+    </fieldset>
+
 
     <form onsubmit="onAddBook(event)" class="add-book-form">
         <span>Add Books:</span>
@@ -33,7 +44,10 @@
             <span class="sort-up" onclick="onSortBooks('price', 1)">🡅</span>
             <span class="sort-down" onclick="onSortBooks('price', -1)">🡇</span>
         </div>
-        <div class="rating rating0">Rating</div>
+        <div class="rating rating0">Rating
+            <span class="sort-up" onclick="onSortBooks('rating', 1)">🡅</span>
+            <span class="sort-down" onclick="onSortBooks('rating', -1)">🡇</span>
+        </div>
         <div class="actions actions0">Actions</div>
     </div>
 

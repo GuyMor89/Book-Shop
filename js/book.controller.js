@@ -1,8 +1,8 @@
 'use strict'
 
 
-var filterBy = []
-var sortBy = { title: 0, price: 0 }
+var filterBy = { title: '', price: 0, stars: 0}
+var sortBy = { title: 0, price: 0, rating: 0 }
 
 
 function onInit() {
@@ -23,9 +23,9 @@ function emptyTable() {
 
     table.insertAdjacentHTML('beforeend', emptyHTML)
 
-    var emptyGridArea = `"empty empty empty"`
+    var emptyGridArea = `"empty empty empty empty"`
 
-    var currentGridAreas = `"title0 price0 actions0"`
+    var currentGridAreas = `"title0 price0 rating0 actions0"`
     var updatedGridAreas = currentGridAreas + emptyGridArea
 
     table.style.gridTemplateAreas = updatedGridAreas
@@ -244,10 +244,10 @@ function displayMessage(message) {
 }
 
 
-function onFilterBooks(inputVal, event) {
-    event.preventDefault()
+function onFilterBooks(type, inputVal) {
+    // event.preventDefault()
 
-    filterBy = inputVal.toLowerCase()
+    filterBy[type] = inputVal.toLowerCase()
 
     if (getBooks().length === 0) return emptyTable()
 
