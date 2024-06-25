@@ -245,11 +245,21 @@ function displayMessage(message) {
 
 
 function onFilterBooks(type, inputVal) {
-    // event.preventDefault()
-
     filterBy[type] = inputVal.toLowerCase()
 
     if (getBooks().length === 0) return emptyTable()
+
+    renderTable()
+}
+
+function onClearFilter() {
+    filterBy = { title: '', price: 0, stars: 0}
+    var titleInput = document.querySelector('.input-title')
+    titleInput.value = ''
+    var priceInput = document.querySelector('.input-price')
+    priceInput.value = 0
+    var starsInput = document.querySelector('.input-stars')
+    starsInput.value = 0
 
     renderTable()
 }

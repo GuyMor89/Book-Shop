@@ -16,14 +16,15 @@
         <legend>Filter Books:</legend>
         <div class="fieldset-container">
             <!-- <form class="filter-books-form"></form> -->
-            <span class="header-title">Filter by title:</span>
+            <span class="header-title">Title:</span>
             <input class="input-title" type="text" oninput="onFilterBooks('title',this.value)" placeholder="Type to search..">
             <!-- <div class="filter-price"> </div> -->
             <span class="header-price">Price:</span>
             <input class="input-price" type="range" min="0" max="250" value="0" oninput="onFilterBooks('price',this.value)">
             <!-- <div class="filter-stars"> </div> -->
-            <span class="header-stars">Star Rating:</span>
+            <span class="header-stars">Rating:</span>
             <input class="input-stars" type="range" min="0" max="4" value="0" oninput="onFilterBooks('stars',this.value)">
+            <div class="clear" onclick="onClearFilter()">Clear</div>
         </div>
     </fieldset>
 

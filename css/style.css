@@ -89,23 +89,32 @@ h1 {
 
 fieldset {
     grid-area: fieldset;
+
+    width: 90%;
+
+    border: 2px solid black;
     border-radius: 3px;
+
+    background-color: rgba(255, 255, 255, 0.789);
+    
 }
 
 .fieldset-container {
     display: grid;
 
-    grid-template-columns: 1fr 1fr 0.5fr 1fr 0.8fr 1fr;
+    grid-template-columns: 1fr 2fr 1fr 2fr 1fr 2fr 1fr;
     grid-template-rows: 1fr;
     grid-template-areas:
-      "header-title input-title header-price input-price header-stars input-stars";
+      "header-title input-title header-price input-price header-stars input-stars clear";
 
     justify-items: center;
     gap: 5px;
   }
 
 
-legend, .add-book-form span {
+legend, 
+.add-book-form span,
+.clear  {
     background-color: rgb(48, 48, 48);
     color: white;
     border-radius: 2px;
@@ -117,15 +126,18 @@ legend, .add-book-form span {
 
 .header-title,
 .header-price,
-.header-stars {
-    background-color: rgb(61, 61, 61);
-    color: white;
-    border-radius: 2px;
-    padding-inline: 10px;
-    padding-block-start: 1px;
+.header-stars{
+    /* background-color: rgb(61, 61, 61); */
+    /* color: white; */
+    border-block-end: 3px solid rgba(0, 0, 0, 0.71);
+    border-radius: 3px;
+    padding-inline: 1px;
 
-    font-size: 1.1em;
-    font-size: 0.9em;
+    font-size: 1em;
+    font-weight: bolder;
+    -webkit-text-stroke: 1px rgba(0, 0, 0, 0.629);
+
+
 }
 
 
@@ -161,7 +173,11 @@ legend, .add-book-form span {
 .add-book-form {
     grid-area: add-book;
     justify-self: center;
+}
 
+.clear {
+    grid-area: clear;
+    cursor: pointer;
 }
 
 
@@ -213,7 +229,7 @@ button {
         "image rating-header"
         "image rating-content";
 
-    height: 37vh;
+    height: 250px;
     width: 500px;
 
     background-color: rgb(255, 255, 245);
@@ -280,10 +296,11 @@ button {
 
 .rating-content {
     grid-area: rating-content;
+    padding-block-start: 5px;
 }
 
 .rating-content img {
-    max-width: 15%;
+    max-width: 13%;
 }
 
 
@@ -488,3 +505,43 @@ input.title {
 .sort-up {
     margin-inline-start: 10px;
 }
+
+
+
+input[type="range"] {
+    -webkit-appearance: none; /* Remove default styling */
+    width: 100%;
+    height: 5px;
+    background: #ddd;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+  input[type="range"]:hover {
+    opacity: 1;
+  }
+
+  /* Webkit */
+  input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 12px;
+    cursor: pointer;
+    background: #000000; /* Track color */
+    border-radius: 5px;
+    margin-block-start: 12px;
+
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #ffffff; /* Thumb color */
+    cursor: pointer;
+    border-radius: 50%;
+    border: 2px solid #333;
+    margin-block-start: -3.5px;
+  }
