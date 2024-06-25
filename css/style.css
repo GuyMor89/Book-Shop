@@ -77,10 +77,10 @@ h1 {
     box-shadow:
         4px 7px 5px 0px rgba(0, 0, 0, 0.5);
 
-    grid-template-columns: 500fr 150fr 350fr;
+    grid-template-columns: 500fr 150fr 150fr 350fr;
 
     grid-template-areas:
-        "title0 price0 actions0";
+        "title0 price0 rating0 actions0";
 
     width: 95vw;
 }
@@ -147,18 +147,20 @@ button {
     margin: auto;
 
     display: grid;
-    gap: 5px;
+    /* gap: 5px; */
 
     grid-template-columns: 1fr 2fr;
-    grid-template-rows: 1fr 2fr 1fr 2fr;
+    grid-template-rows: 1fr 2fr 1fr 2fr 1fr 2fr;
     grid-template-areas:
         "image title-header"
         "image title-content"
         "image price-header"
-        "image price-content";
+        "image price-content"
+        "image rating-header"
+        "image rating-content";
 
-    height: 30vh;
-    width: 400px;
+    height: 37vh;
+    width: 500px;
 
     background-color: rgb(255, 255, 245);
     border: 2px solid rgb(136, 136, 136);
@@ -183,48 +185,53 @@ button {
     border-radius: 3px;
 }
 
-.title-header {
-    grid-area: title-header;
-    margin-inline-start: 10px;
-    height: 25px;
+.header {
+    margin-inline-start: 20px;
 
     font-size: 1.2em;
     background-color: rgba(0, 0, 0, 0.77);
     color: white;
     border-radius: 3px;
+}
+
+.content {
+    margin-inline-start: 20px;
+    margin-block-start: 5px;
+
+    font-size: 1.5em;
+    color: rgb(0, 0, 0);
+    border-radius: 3px;
+}
+
+.title-header {
+    grid-area: title-header;
 }
 
 .title-content {
     grid-area: title-content;
-    margin-inline-start: 10px;
-
-    font-size: 1.5em;
-    /* background-color: rgba(255, 255, 255, 0.77); */
-    color: rgb(0, 0, 0);
-    border-radius: 3px;
 }
 
 .price-header {
     grid-area: price-header;
-    margin-inline-start: 10px;
-    height: 25px;
-
-    font-size: 1.2em;
-    background-color: rgba(0, 0, 0, 0.77);
-    color: white;
-    border-radius: 3px;
-
 }
 
 .price-content {
     grid-area: price-content;
-    margin-inline-start: 10px;
-
-    font-size: 1.5em;
-    /* background-color: rgba(255, 255, 255, 0.77); */
-    color: rgb(0, 0, 0);
-    border-radius: 3px;
 }
+
+.rating-header {
+    grid-area: rating-header;
+}
+
+
+.rating-content {
+    grid-area: rating-content;
+}
+
+.rating-content img {
+    max-width: 15%;
+}
+
 
 
 
@@ -256,6 +263,7 @@ button {
 
 .title,
 .price,
+.rating,
 .actions {
     display: flex;
     place-items: center;
@@ -264,6 +272,7 @@ button {
 
 .title0,
 .price0,
+.rating0,
 .actions0 {
     justify-content: center;
 
@@ -278,24 +287,34 @@ button {
 
 
 .price {
-    grid-area: price;
     justify-content: center;
 }
 
 .title {
-    grid-area: title;
     -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.829);
-
 }
 
 .actions {
     display: flex;
     gap: 5px;
-    grid-area: actions;
     -webkit-text-stroke: 0.3px rgba(0, 0, 0, 1.029);
 
     justify-content: center;
 }
+
+.rating {
+    display: flex;
+    justify-content: center;
+    padding-inline: 5px;
+}
+
+.rating img {
+    /* flex: 1 1 auto; */
+    max-width: 20%;
+    /* height: auto; */
+    /* object-fit: cover; */
+}
+
 
 input.price {
     display: flex;
@@ -310,25 +329,6 @@ input.price {
 input.title {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
-
-
-/* [class^="price"]:is(.price0, .price2, .price4, .price6, .price8, .price10, .price12),
-[class^="title"]:is(.title0, .title2, .title4, .title6, .title8, .title10, .title12),
-[class^="actions"]:is(.actions0, .actions2, .actions4, .actions6, .actions8, .actions10, .actions12) { */
-.price:nth-child(2n + 1), .title:nth-child(2n), .actions:nth-child(2n) {
-
-    background-color: rgb(255, 255, 255);
-}
-
-
-/* [class^="price"]:is(.price1, .price3, .price5, .price7, .price9, .price11, .price13),
-[class^="title"]:is(.title1, .title3, .title5, .title7, .title9, .title11, .title13),
-[class^="actions"]:is(.actions1, .actions3, .actions5, .actions7, .actions9, .actions11, .actions13) { */
-.price:nth-child(2n), .title:nth-child(2n + 1), .actions:nth-child(2n + 1) {
-
-    background-color: rgb(224, 224, 224);
-
-}    
 
 
 
@@ -372,6 +372,10 @@ input.title {
 
 .price0 {
     grid-area: price0;
+}
+
+.rating0 {
+    grid-area: rating0
 }
 
 .actions0 {

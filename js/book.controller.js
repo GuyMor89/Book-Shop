@@ -42,9 +42,10 @@ function renderTable() {
         var injectedHTML = document.querySelectorAll('[data-idx]')
         injectedHTML.forEach(element => element.remove())
 
-        var bookHTML = getBooks().map((book, idx) =>
+        var bookHTML = getBooks().map((book) =>
             `<div class="title title${book.id}" data-idx>${book.title}</div>
              <div class="price price${book.id}" data-idx>${book.price}</div>
+             <div class="rating rating${book.id}" data-idx>${getStarsImg(book.rating)}</div>
              <div class="actions actions${book.id}" data-idx>
                 <div class="read read${book.id}" data-idx onclick="onDisplayBook(${book.id})">Read</div>
                 <div class="update update${book.id}" data-idx onclick="onUpdateBook('${book.title}')">Update</div>
@@ -56,22 +57,24 @@ function renderTable() {
 
 
     function injectCSS(table) {
-        var bookGridArea = getBooks().map((book, idx) =>
-            `"title${book.id} price${book.id} actions${book.id}"`
+        var bookGridArea = getBooks().map((book) =>
+            `"title${book.id} price${book.id} rating${book.id} actions${book.id}"`
         )
 
-        var currentGridAreas = `"title0 price0 actions0"`
+        var currentGridAreas = `"title0 price0 rating0 actions0"`
         var updatedGridAreas = currentGridAreas + bookGridArea.join('')
 
         table.style.gridTemplateAreas = updatedGridAreas
 
 
-        var bookCSS = getBooks().map((book, idx) =>
+        var bookCSS = getBooks().map((book) =>
             `.title${book.id} { grid-area: title${book.id} }
              .price${book.id} { grid-area: price${book.id} }
+             .rating${book.id} { grid-area: rating${book.id}}
              .actions${book.id} { grid-area: actions${book.id} }`
         ).join('')
 
+        colorLinesInCSS()
 
         var styleSheet = document.createElement('style')
         styleSheet.textContent = bookCSS
@@ -210,12 +213,12 @@ function onDisplayBook(idx) {
 
     var modal = document.querySelector('.modal')
     modal.innerHTML = `<div class="modal-img"><img src=${bookImageSrc}></div>
-                           <div class="title-header">Book Title:</div>
-                           <div class="title-content">${bookToDisplay.title}</div>
-                           <div class="price-header">Book Price:</div>
-                           <div class="price-content">${bookToDisplay.price}</div>`
-
-
+                           <div class="title-header header">Book Title</div>
+                           <div class="title-content content">${bookToDisplay.title}</div>
+                           <div class="price-header header">Book Price</div>
+                           <div class="price-content content">${bookToDisplay.price}</div>
+                           <div class="rating-header header"> Rating</div>
+                           <div class="rating-content content">${getStarsImg(bookToDisplay.rating)}</div>`
 }
 
 window.onclick = function (event) {

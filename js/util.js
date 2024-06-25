@@ -23,3 +23,35 @@ function capitalizeInput(text) {
     })
     return capitalizedText
 }
+
+function colorLinesInCSS() {
+
+
+    const classPrefixes = ['title', 'price', 'rating', 'actions']
+
+    classPrefixes.forEach(prefix => {
+        document.querySelectorAll(`[class^="${prefix}"]`).forEach((element, index) => {
+            if (index % 2 !== 0) {
+                element.style.backgroundColor = 'white'
+            }
+        })
+    })
+    classPrefixes.forEach(prefix => {
+        document.querySelectorAll(`[class^="${prefix}"]`).forEach((element, index) => {
+            if (index % 2 === 0) {
+                element.style.backgroundColor = '#e0e0e0'
+            }
+        })
+    })
+}
+
+function getStarsImg(amount) {
+    var starImgSrc = `<img src="img/star.png">`
+    var starImgHTML = ''
+
+    for (let i = 0; i < amount; i++) {
+        starImgHTML += starImgSrc
+    }
+    return starImgHTML
+}
+
