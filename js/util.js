@@ -17,6 +17,7 @@ function loadFromStorage(key) {
     return JSON.parse(valueString)
 }
 
+
 function capitalizeInput(text) {
     if (typeof text !== 'string') return ''
     const capitalizedText = text.replace(/\b\w/g, function (char, index) {
@@ -27,6 +28,7 @@ function capitalizeInput(text) {
     })
     return capitalizedText
 }
+
 
 function colorLinesInCSS() {
 
@@ -48,7 +50,7 @@ function colorLinesInCSS() {
     })
 }
 
-function getratingImg(amount) {
+function getRatingImage(amount) {
     var starImgSrc = `<img src="img/star.png">`
     var starImgHTML = ''
 

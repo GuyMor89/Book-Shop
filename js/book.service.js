@@ -41,8 +41,8 @@ function getBooks() {
     var bookArray = gBooks
 
     bookArray = bookArray.filter(book => book.title.toLowerCase().includes(filterBy.title))
-    bookArray = bookArray.filter(book => book.price > filterBy.price)
-    bookArray = bookArray.filter(book => book.rating > filterBy.rating)
+    bookArray = bookArray.filter(book => book.price >= filterBy.price)
+    bookArray = bookArray.filter(book => book.rating >= filterBy.rating)
 
     bookArray = bookArray.sort((a, b) => (b.price - a.price) * sortBy.price)
     bookArray = bookArray.sort((a, b) => (b.title.localeCompare(a.title)) * sortBy.title)
@@ -66,8 +66,8 @@ function addBook(inputTitle, inputPrice, inputRating) {
 
     bookArray.push({
         id, title: capitalizeInput(inputTitle),
-        price: inputPrice, 
-        rating: inputRating,
+        price: +inputPrice, 
+        rating: +inputRating,
         image: image.src
     })
 

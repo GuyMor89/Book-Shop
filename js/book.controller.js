@@ -5,6 +5,8 @@ var filterBy = { title: '', price: 0, rating: 0 }
 var sortBy = { title: 0, price: 0, rating: 0 }
 
 function onInit() {
+    readQueryParams()
+
     renderTable()
 
     displayStats()
@@ -24,7 +26,7 @@ function renderTable() {
         var bookHTML = getBooks().map((book) =>
             `<div class="title title${book.id}" data-idx>${book.title}</div>
              <div class="price price${book.id}" data-idx>${book.price}</div>
-             <div class="rating rating${book.id}" data-idx>${getratingImg(book.rating)}</div>
+             <div class="rating rating${book.id}" data-idx>${getRatingImage(book.rating)}</div>
              <div class="actions actions${book.id}" data-idx>
                 <div class="read read${book.id}" data-idx onclick="onDisplayBook(${book.id})">Read</div>
                 <div class="update update${book.id}" data-idx onclick="onOpenModal('${book.id}')">Update</div>
@@ -60,48 +62,9 @@ function renderTable() {
 
         document.head.appendChild(styleSheet)
     }
+    displayStats()
 }
 
-
-function onSortBooks(type, direction) {
-    sortBy[type] = direction
-    console.log(sortBy);
-
-    renderTable()
-}
-
-function onOpenModal(id) {
-    var bookModal = document.querySelector('.add-book-modal')
-    var modalFieldset = document.querySelector('.add-book-modal fieldset')
-    var modalFieldsetContainer = document.querySelector('.fieldset-modal-container')
-
-    if (!id) {
-        modalFieldsetContainer.insertAdjacentHTML('beforeend', `<button class="submit" onclick="onAddBook()" data-idx>Add</button>`)
-        modalFieldset.insertAdjacentHTML('afterbegin', `<legend data-idx>Add Book</legend>`)
-    } else if (id) {
-        var inputTitle = document.querySelector('.add-book-title-input')
-        var inputPrice = document.querySelector('.add-book-price-input')
-        var inputRating = document.querySelector('.add-book-rating-input')
-
-        var bookArray = gBooks
-        var bookIdToUpdate = bookArray.findIndex(book => book.id === +id)
-
-        inputTitle.value = bookArray[bookIdToUpdate].title
-        inputPrice.value = bookArray[bookIdToUpdate].price
-        inputRating.value = bookArray[bookIdToUpdate].rating
-
-        modalFieldsetContainer.insertAdjacentHTML('beforeend', `<button class="submit" onclick="onUpdateBook('${id}')" data-idx>Update</button>`)
-        modalFieldset.insertAdjacentHTML('afterbegin', `<legend data-idx>Update Book</legend>`)
-    }
-
-    bookModal.showModal()
-}
-
-function onCloseModal() {
-    var bookModal = document.querySelector('.add-book-modal')
-
-    bookModal.close()
-}
 
 function onAddBook() {
     var bookModal = document.querySelector('.add-book-modal')
@@ -175,7 +138,7 @@ function onUpdateBook(id) {
     bookModal.close()
 }
 
-
+// Display the book reading modal
 
 function onDisplayBook(idx) {
     var modalOverlay = document.querySelector('.modal-overlay')
@@ -192,7 +155,7 @@ function onDisplayBook(idx) {
                            <div class="price-header header">Book Price</div>
                            <div class="price-content content">${bookToDisplay.price}</div>
                            <div class="rating-header header"> Rating</div>
-                           <div class="rating-content content">${getratingImg(bookToDisplay.rating)}</div>`
+                           <div class="rating-content content">${getRatingImage(bookToDisplay.rating)}</div>`
 }
 
 window.onclick = function (event) {
@@ -203,11 +166,63 @@ window.onclick = function (event) {
 }
 
 
+// Display the book add or update modal
+
+function onOpenModal(id) {
+    var bookModal = document.querySelector('.add-book-modal')
+    var modalFieldset = document.querySelector('.add-book-modal fieldset')
+    var modalFieldsetContainer = document.querySelector('.fieldset-modal-container')
+
+    var inputTitle = document.querySelector('.add-book-title-input')
+    var inputPrice = document.querySelector('.add-book-price-input')
+    var inputRating = document.querySelector('.add-book-rating-input')
+
+    if (!id) {
+        modalFieldsetContainer.insertAdjacentHTML('beforeend', `<button class="submit" onclick="onAddBook()" data-idx>Add</button>`)
+        modalFieldset.insertAdjacentHTML('afterbegin', `<legend data-idx>Add Book</legend>`)
+    } else if (id) {
+        var bookArray = gBooks
+        var bookIdToUpdate = bookArray.findIndex(book => book.id === +id)
+
+        inputTitle.value = bookArray[bookIdToUpdate].title
+        inputPrice.value = bookArray[bookIdToUpdate].price
+        inputRating.value = bookArray[bookIdToUpdate].rating
+
+        modalFieldsetContainer.insertAdjacentHTML('beforeend', `<button class="submit" onclick="onUpdateBook('${id}')" data-idx>Update</button>`)
+        modalFieldset.insertAdjacentHTML('afterbegin', `<legend data-idx>Update Book</legend>`)
+    }
+    bookModal.showModal()
+    inputTitle.focus()
+}
+
+function onCloseModal() {
+    var bookModal = document.querySelector('.add-book-modal')
+    var injectedHTML = document.querySelectorAll('.add-book-modal [data-idx]')
+    injectedHTML.forEach(element => element.remove())
+
+    var inputTitle = document.querySelector('.add-book-title-input')
+    var inputPrice = document.querySelector('.add-book-price-input')
+    var inputRating = document.querySelector('.add-book-rating-input')
+
+    inputTitle.value = inputPrice.value = inputRating.value = ''
+
+    bookModal.close()
+}
+
+function onSortBooks(type, direction) {
+    sortBy[type] = direction
+    console.log(sortBy);
+
+    setQueryParams()
+    renderTable()
+}
+
 function onFilterBooks(type, inputVal) {
     filterBy[type] = inputVal.toLowerCase()
 
     if (getBooks().length === 0) return emptyTable()
 
+    setQueryParams()
     renderTable()
 }
 

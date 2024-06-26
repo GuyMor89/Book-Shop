@@ -16,21 +16,21 @@
         <legend>Filter Books</legend>
         <div class="fieldset-filter-container">
             <div class="header-title">Title:</div>
-            <input class="input-title" type="text" oninput="onFilterBooks('title',this.value)"
+            <input class="input-title filter-title" type="text" oninput="onFilterBooks('title',this.value)"
                 placeholder="Type to search..">
             <div class="header-price">Price:</div>
             <div class="range-container">
-                <input class="input-price" type="range" min="0" max="250" value="0"
+                <input class="input-price filter-price" type="range" min="0" max="250" value="0"
                     oninput="onFilterBooks('price',this.value)">
                 <div class="range-value">0</div>
             </div>
             <div class="header-rating">Rating:</div>
             <div class="range-container">
-                <input class="input-rating" type="range" min="0" max="4" value="0"
+                <input class="input-rating filter-rating" type="range" min="1" max="5" value="0"
                     oninput="onFilterBooks('rating',this.value)">
                 <div class="range-value">0</div>
             </div>
-            <div class="clear" onclick="onClearFilter()">Clear</div>
+            <div class="clear-filter" onclick="onClearFilter()">Clear</div>
         </div>
     </fieldset>
 
@@ -48,7 +48,7 @@
                 </div>
                 <div class="header-rating">Rating:</div>
                 <div class="range-container">
-                    <input class="input-rating add-book-rating-input" type="range" min="0" max="4" value="0"
+                    <input class="input-rating add-book-rating-input" type="range" min="1" max="5" value="0"
                         placeholder="Choose a rating..">
                     <div class="range-value">0</div>
                 </div>
@@ -61,10 +61,11 @@
         <div class="title title0">Title
             <span class="sort-up" onclick="onSortBooks('title', 1)">🡅</span>
             <span class="sort-down" onclick="onSortBooks('title', -1)">🡇</span>
+            <span class="clear-sort" onclick="onClearSort()">Clear</span>
         </div>
         <div class="price price0">Price
-            <span class="sort-up" onclick="onSortBooks('price', 1)">🡅</span>
-            <span class="sort-down" onclick="onSortBooks('price', -1)">🡇</span>
+            <span class="sort-up" onclick="onSortBooks('price', -1)">🡅</span>
+            <span class="sort-down" onclick="onSortBooks('price', 1)">🡇</span>
         </div>
         <div class="rating rating0">Rating
             <span class="sort-up" onclick="onSortBooks('rating', 1)">🡅</span>
@@ -85,8 +86,9 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="js/imageSearch.js"></script>
     <script src="js/book.service.js"></script>
-    <script src="js/style.service.js"></script>
+    <script src="js/style.controller.js"></script>
     <script src="js/book.controller.js"></script>
+    <script src="js/url-params.service.js"></script>
 
 </body>
 

@@ -48,6 +48,12 @@ function onClearFilter() {
     renderTable()
 }
 
+function onClearSort() {
+    sortBy = { title: 0, price: 0, rating: 0 }
+    renderTable()
+}
+
+
 
 function displayStats() {
     var statsFooter = document.querySelector('.stats-footer')
@@ -68,11 +74,13 @@ function displayStats() {
         return accu
     }, {})
 
-    statsFooter.innerHTML =
-        `<div class="stats-container">
+    if (Object.keys(bookPrices).length !== 0) {
+        statsFooter.innerHTML =
+            `<div class="stats-container">
      <div class="expensive">Expensive Books: ${bookPrices.expensive.length}</div> 
      <div class="midrange">Midrange Books: ${bookPrices.midrange.length}</div>
      <div class="cheap">Cheap Books: ${bookPrices.cheap.length}</div>
      </div>`
+    }
 }
 

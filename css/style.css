@@ -52,13 +52,13 @@ h1 {
     margin-block-end: 10px;
     padding-inline: 10px;
     padding-block: 3px;
-    top: 75px;
+    top: 80px;
 
     background-color: #51bcf183;
     border-radius: 3px;
     text-align: center;
     color: rgb(0, 0, 0);
-    font-size: 0.75em;
+    font-size: 1em;
 
     visibility: hidden;
 }
@@ -127,7 +127,7 @@ h1 {
 
 
 legend, 
-.clear,
+.clear-filter,
 .submit  {
     background-color: rgb(48, 48, 48);
     color: white;
@@ -186,10 +186,25 @@ legend,
     padding-block-end: 10px;
 }
 
-.clear {
+.clear-filter {
     grid-area: clear;
     cursor: pointer;
 }
+
+.clear-sort {
+    cursor: pointer;
+    margin-inline-start: 15px;
+    justify-self: flex-end;
+    
+    background-color: rgb(48, 48, 48);
+    color: white;
+    border-radius: 2px;
+    padding-inline: 5px;
+    padding-block-end: 2px;
+
+    font-size: 0.8em;
+}
+
 
 
 form input {
@@ -235,7 +250,7 @@ form input {
 .modal {
     position: relative;
     padding: 20px;
-    top: 130px;
+    top: 175px;
     margin: auto;
 
     display: grid;
@@ -370,12 +385,13 @@ form input {
     justify-content: center;
 
     font-weight: bolder;
-    font-size: 1.1em;
+    font-size: 1.2em;
     -webkit-text-stroke: 1px rgba(0, 0, 0, 0.429);
 
-    height: 25px;
-
+    height: 30px;
 }
+
+
 
 
 
@@ -545,6 +561,8 @@ input.title {
 .sort-up {
     margin-inline-start: 10px;
 }
+
+
 
 .range-container {
     position: relative;
