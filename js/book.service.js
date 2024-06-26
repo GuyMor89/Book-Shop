@@ -42,7 +42,7 @@ function getBooks() {
 
     bookArray = bookArray.filter(book => book.title.toLowerCase().includes(filterBy.title))
     bookArray = bookArray.filter(book => book.price > filterBy.price)
-    bookArray = bookArray.filter(book => book.rating > filterBy.stars)
+    bookArray = bookArray.filter(book => book.rating > filterBy.rating)
 
     bookArray = bookArray.sort((a, b) => (b.price - a.price) * sortBy.price)
     bookArray = bookArray.sort((a, b) => (b.title.localeCompare(a.title)) * sortBy.title)
@@ -51,22 +51,37 @@ function getBooks() {
     return bookArray
 }
 
-function deleteBook(title) {
-
+function deleteBook(id) {
     var bookArray = gBooks
-    var bookIdToRemove = bookArray.findIndex(book => book.title === title)
+    var bookIdToRemove = bookArray.findIndex(book => book.id === +id)
 
     if (bookIdToRemove > -1) bookArray.splice(bookIdToRemove, 1)
 
     saveToStorage('bookArray', bookArray)
 }
 
-function addBook(input) {
+function addBook(inputTitle, inputPrice, inputRating) {
     var bookArray = gBooks
     var id = bookArray[bookArray.length - 1].id + 1
 
-    bookArray.push({ id, title: capitalizeInput(input.value), price: getRandomInt(1, 20) * 15, rating: getRandomInt(1, 6), image: image.src })
+    bookArray.push({
+        id, title: capitalizeInput(inputTitle),
+        price: inputPrice, 
+        rating: inputRating,
+        image: image.src
+    })
 
     saveToStorage('bookArray', bookArray)
 }
 
+function updateBook(id, inputTitle, inputPrice, inputRating) {
+    var bookArray = gBooks
+    var bookIdToUpdate = bookArray.findIndex(book => book.id === +id)
+
+    bookArray[bookIdToUpdate].title = capitalizeInput(inputTitle)
+    bookArray[bookIdToUpdate].price = +inputPrice
+    bookArray[bookIdToUpdate].rating = +inputRating
+    bookArray[bookIdToUpdate].image = image.src
+
+    saveToStorage('bookArray', bookArray)
+}

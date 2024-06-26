@@ -12,28 +12,49 @@
     <h1>Book Shop</h1>
     <div class="message"></div>
 
-    <fieldset>
-        <legend>Filter Books:</legend>
-        <div class="fieldset-container">
-            <!-- <form class="filter-books-form"></form> -->
-            <span class="header-title">Title:</span>
-            <input class="input-title" type="text" oninput="onFilterBooks('title',this.value)" placeholder="Type to search..">
-            <!-- <div class="filter-price"> </div> -->
-            <span class="header-price">Price:</span>
-            <input class="input-price" type="range" min="0" max="250" value="0" oninput="onFilterBooks('price',this.value)">
-            <!-- <div class="filter-stars"> </div> -->
-            <span class="header-stars">Rating:</span>
-            <input class="input-stars" type="range" min="0" max="4" value="0" oninput="onFilterBooks('stars',this.value)">
+    <fieldset class="fieldset-filter">
+        <legend>Filter Books</legend>
+        <div class="fieldset-filter-container">
+            <div class="header-title">Title:</div>
+            <input class="input-title" type="text" oninput="onFilterBooks('title',this.value)"
+                placeholder="Type to search..">
+            <div class="header-price">Price:</div>
+            <div class="range-container">
+                <input class="input-price" type="range" min="0" max="250" value="0"
+                    oninput="onFilterBooks('price',this.value)">
+                <div class="range-value">0</div>
+            </div>
+            <div class="header-rating">Rating:</div>
+            <div class="range-container">
+                <input class="input-rating" type="range" min="0" max="4" value="0"
+                    oninput="onFilterBooks('rating',this.value)">
+                <div class="range-value">0</div>
+            </div>
             <div class="clear" onclick="onClearFilter()">Clear</div>
         </div>
     </fieldset>
 
-
-    <form onsubmit="onAddBook(event)" class="add-book-form">
-        <span>Add Books:</span>
-        <input type="text" class="add-book-input" placeholder="Type a title..">
-        <button>Add</button>
-    </form>
+    <dialog class="add-book-modal">
+        <button type="button" class="close" onclick="onCloseModal()">✖️</button>
+        <fieldset>
+            <div class="fieldset-modal-container">
+                <div class="header-title">Title:</div>
+                <input class="input-title add-book-title-input" type="text" placeholder="Choose a title..">
+                <div class="header-price">Price:</div>
+                <div class="range-container">
+                    <input class="input-price add-book-price-input" type="range" min="0" max="500" value="0"
+                        placeholder="Choose a price..">
+                    <div class="range-value">0</div>
+                </div>
+                <div class="header-rating">Rating:</div>
+                <div class="range-container">
+                    <input class="input-rating add-book-rating-input" type="range" min="0" max="4" value="0"
+                        placeholder="Choose a rating..">
+                    <div class="range-value">0</div>
+                </div>
+            </div>
+        </fieldset>
+    </dialog>
 
     <div class="table">
 
@@ -49,7 +70,9 @@
             <span class="sort-up" onclick="onSortBooks('rating', 1)">🡅</span>
             <span class="sort-down" onclick="onSortBooks('rating', -1)">🡇</span>
         </div>
-        <div class="actions actions0">Actions</div>
+        <div class="actions actions0">Actions
+            <span class="add-book" onclick="onOpenModal()">➕</span>
+        </div>
     </div>
 
     <div class="modal-overlay">
@@ -62,6 +85,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="js/imageSearch.js"></script>
     <script src="js/book.service.js"></script>
+    <script src="js/style.service.js"></script>
     <script src="js/book.controller.js"></script>
 
 </body>

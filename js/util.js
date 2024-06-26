@@ -18,14 +18,17 @@ function loadFromStorage(key) {
 }
 
 function capitalizeInput(text) {
-    const capitalizedText = text.replace(/\b\w/g, function (char) {
-        return char.toUpperCase()
+    if (typeof text !== 'string') return ''
+    const capitalizedText = text.replace(/\b\w/g, function (char, index) {
+        if (index === 0 || text[index - 1] === ' ' || text[index - 1] === '\t' || text[index - 1] === '\n') {
+            return char.toUpperCase()
+        }
+        return char
     })
     return capitalizedText
 }
 
 function colorLinesInCSS() {
-
 
     const classPrefixes = ['title', 'price', 'rating', 'actions']
 
@@ -45,7 +48,7 @@ function colorLinesInCSS() {
     })
 }
 
-function getStarsImg(amount) {
+function getratingImg(amount) {
     var starImgSrc = `<img src="img/star.png">`
     var starImgHTML = ''
 
@@ -55,3 +58,41 @@ function getStarsImg(amount) {
     return starImgHTML
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    const rangeInputs = document.querySelectorAll('.input-price, .input-rating') // Select all range inputs
+    const rangeValues = document.querySelectorAll('.range-value') // Select all range value displays
+
+    rangeInputs.forEach((rangeInput, index) => {
+        const rangeValue = rangeValues[index]
+
+        function updateRangeValue() {
+            const value = rangeInput.value
+            rangeValue.textContent = value
+
+            const rangeWidth = rangeInput.offsetWidth
+            const thumbWidth = 20 // Approximate width of the range input thumb
+            const max = rangeInput.max
+            const min = rangeInput.min
+
+            const left = ((value - min) / (max - min)) * (rangeWidth - thumbWidth) + thumbWidth / 2
+            rangeValue.style.left = `${left}px`
+        }
+
+        rangeInput.addEventListener('input', function() {
+            rangeValue.style.visibility = 'visible'
+            updateRangeValue()
+        })
+
+        rangeInput.addEventListener('blur', function() {
+            rangeValue.style.visibility = 'hidden'
+        })
+
+        rangeInput.addEventListener('focus', function() {
+            rangeValue.style.visibility = 'visible'
+            updateRangeValue()
+        })
+
+        // Initialize the visibility state
+        rangeValue.style.visibility = 'hidden'
+    })
+})

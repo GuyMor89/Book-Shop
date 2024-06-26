@@ -1,34 +1,13 @@
 'use strict'
 
 
-var filterBy = { title: '', price: 0, stars: 0}
+var filterBy = { title: '', price: 0, rating: 0 }
 var sortBy = { title: 0, price: 0, rating: 0 }
-
 
 function onInit() {
     renderTable()
 
     displayStats()
-}
-
-
-function emptyTable() {
-    var table = document.querySelector('.table')
-
-    var injectedHTML = document.querySelectorAll('[data-idx]')
-    injectedHTML.forEach(element => element.remove())
-
-    var emptyHTML =
-        `<div class="empty" data-idx>No matching books were found..</div>`
-
-    table.insertAdjacentHTML('beforeend', emptyHTML)
-
-    var emptyGridArea = `"empty empty empty empty"`
-
-    var currentGridAreas = `"title0 price0 rating0 actions0"`
-    var updatedGridAreas = currentGridAreas + emptyGridArea
-
-    table.style.gridTemplateAreas = updatedGridAreas
 }
 
 
@@ -45,11 +24,11 @@ function renderTable() {
         var bookHTML = getBooks().map((book) =>
             `<div class="title title${book.id}" data-idx>${book.title}</div>
              <div class="price price${book.id}" data-idx>${book.price}</div>
-             <div class="rating rating${book.id}" data-idx>${getStarsImg(book.rating)}</div>
+             <div class="rating rating${book.id}" data-idx>${getratingImg(book.rating)}</div>
              <div class="actions actions${book.id}" data-idx>
                 <div class="read read${book.id}" data-idx onclick="onDisplayBook(${book.id})">Read</div>
-                <div class="update update${book.id}" data-idx onclick="onUpdateBook('${book.title}')">Update</div>
-                <div class="delete delete${book.id}" data-idx onclick="onDeleteBook('${book.title}')">Delete</div>
+                <div class="update update${book.id}" data-idx onclick="onOpenModal('${book.id}')">Update</div>
+                <div class="delete delete${book.id}" data-idx onclick="onDeleteBook('${book.id}')">Delete</div>
          </div>`
         )
         table.insertAdjacentHTML('beforeend', bookHTML.join(''))
@@ -91,28 +70,72 @@ function onSortBooks(type, direction) {
     renderTable()
 }
 
+function onOpenModal(id) {
+    var bookModal = document.querySelector('.add-book-modal')
+    var modalFieldset = document.querySelector('.add-book-modal fieldset')
+    var modalFieldsetContainer = document.querySelector('.fieldset-modal-container')
 
-function onAddBook(event) {
-    event.preventDefault()
+    if (!id) {
+        modalFieldsetContainer.insertAdjacentHTML('beforeend', `<button class="submit" onclick="onAddBook()" data-idx>Add</button>`)
+        modalFieldset.insertAdjacentHTML('afterbegin', `<legend data-idx>Add Book</legend>`)
+    } else if (id) {
+        var inputTitle = document.querySelector('.add-book-title-input')
+        var inputPrice = document.querySelector('.add-book-price-input')
+        var inputRating = document.querySelector('.add-book-rating-input')
 
-    var input = document.querySelector('[placeholder="Type a title.."]')
-    if (input.value === '') return displayMessage('Can\'t add blank title')
+        var bookArray = gBooks
+        var bookIdToUpdate = bookArray.findIndex(book => book.id === +id)
 
-    getImageSrc(input.value)
+        inputTitle.value = bookArray[bookIdToUpdate].title
+        inputPrice.value = bookArray[bookIdToUpdate].price
+        inputRating.value = bookArray[bookIdToUpdate].rating
+
+        modalFieldsetContainer.insertAdjacentHTML('beforeend', `<button class="submit" onclick="onUpdateBook('${id}')" data-idx>Update</button>`)
+        modalFieldset.insertAdjacentHTML('afterbegin', `<legend data-idx>Update Book</legend>`)
+    }
+
+    bookModal.showModal()
+}
+
+function onCloseModal() {
+    var bookModal = document.querySelector('.add-book-modal')
+
+    bookModal.close()
+}
+
+function onAddBook() {
+    var bookModal = document.querySelector('.add-book-modal')
+
+    var inputTitle = document.querySelector('.add-book-title-input')
+    var inputPrice = document.querySelector('.add-book-price-input')
+    var inputRating = document.querySelector('.add-book-rating-input')
+
+    if (inputTitle.value === null || inputTitle.value === '' || inputTitle.value === 0) {
+        return displayMessage('Can\'t add blank title')
+    } else if (+inputPrice.value === null || inputPrice.value === '' || +inputPrice.value === 0) {
+        return displayMessage('Can\'t add blank price')
+    } else if (+inputRating.value === null || inputRating.value === '' || +inputRating.value === 0) {
+        return displayMessage('Can\'t add blank rating')
+    }
+
+    getImageSrc(inputTitle.value)
 
     setTimeout(() => {
-        addBook(input)
+        addBook(inputTitle.value, inputPrice.value, inputRating.value)
 
-        input.value = ''
+        inputTitle.value = inputPrice.value = inputRating.value = ''
 
         displayMessage('Book added!')
 
         renderTable()
     }, 1000)
+
+    bookModal.close()
 }
 
-function onDeleteBook(title) {
-    deleteBook(title)
+
+function onDeleteBook(id) {
+    deleteBook(id)
     displayMessage('Book deleted!')
 
     renderTable()
@@ -121,84 +144,35 @@ function onDeleteBook(title) {
 }
 
 
-function onUpdateBook(title) {
-    var bookArray = gBooks
-    var bookIdToUpdate = bookArray.findIndex(book => book.title === title)
+function onUpdateBook(id) {
 
-    UpdateBookTitle()
-    UpdateBookPrice()
+    var bookModal = document.querySelector('.add-book-modal')
 
-    function UpdateBookTitle() {
+    var inputTitle = document.querySelector('.add-book-title-input')
+    var inputPrice = document.querySelector('.add-book-price-input')
+    var inputRating = document.querySelector('.add-book-rating-input')
 
-        const elTitle = document.querySelector(`.title${bookArray[bookIdToUpdate].id}`)
-
-        switchToInput(elTitle, bookIdToUpdate)
-
-        function switchToInput(elTitle, bookIdToUpdate) {
-
-            if (elTitle.tagName.toLowerCase() === 'input') {
-                return
-            }
-
-            var input = document.createElement('input')
-            input.classList.add('title', `title${bookArray[bookIdToUpdate].id}`)
-            input.value = elTitle.innerText
-
-            elTitle.replaceWith(input)
-            input.focus()
-
-            input.onkeydown = (enter) => { if (enter.key === 'Enter') switchToDiv(elTitle, input, bookIdToUpdate) }
-        }
-        function switchToDiv(elTitle, input, bookIdToUpdate) {
-
-            elTitle.innerText = capitalizeInput(input.value)
-            bookArray[bookIdToUpdate].title = capitalizeInput(input.value)
-            getImageSrc(input.value)
-
-            setTimeout(() => {
-                bookArray[bookIdToUpdate].image = image.src
-                saveToStorage('bookArray', bookArray)
-                displayMessage('Title updated!')
-
-                input.replaceWith(elTitle)
-                renderTable()
-                if (getBooks().length === 0) return emptyTable()
-            }, 1000);
-        }
+    if (inputTitle.value === null || inputTitle.value === '' || inputTitle.value === 0) {
+        return displayMessage('Can\'t add blank title')
+    } else if (+inputPrice.value === null || inputPrice.value === '' || +inputPrice.value === 0) {
+        return displayMessage('Can\'t add blank price')
+    } else if (+inputRating.value === null || inputRating.value === '' || +inputRating.value === 0) {
+        return displayMessage('Can\'t add blank rating')
     }
 
-    function UpdateBookPrice() {
+    getImageSrc(inputTitle.value)
 
-        const elPrice = document.querySelector(`.price${bookArray[bookIdToUpdate].id}`)
+    setTimeout(() => {
+        updateBook(id, inputTitle.value, inputPrice.value, inputRating.value)
 
-        switchToInput(elPrice, bookIdToUpdate)
+        inputTitle.value = inputPrice.value = inputRating.value = ''
 
-        function switchToInput(elPrice, bookIdToUpdate) {
+        displayMessage('Book updated!')
 
-            if (elPrice.tagName.toLowerCase() === 'input') {
-                return
-            }
+        renderTable()
+    }, 1000);
 
-            var input = document.createElement('input')
-            input.classList.add('price', `price${bookArray[bookIdToUpdate].id}`)
-            input.value = elPrice.innerText
-
-            elPrice.replaceWith(input)
-            input.focus()
-
-            input.onkeydown = (enter) => { if (enter.key === 'Enter') switchToDiv(elPrice, input, bookIdToUpdate) }
-        }
-        function switchToDiv(elPrice, input, bookIdToUpdate) {
-
-            elPrice.innerText = +input.value
-            bookArray[bookIdToUpdate].price = +input.value
-
-            saveToStorage('bookArray', bookArray)
-            displayMessage('Price updated!')
-
-            input.replaceWith(elPrice)
-        }
-    }
+    bookModal.close()
 }
 
 
@@ -218,7 +192,7 @@ function onDisplayBook(idx) {
                            <div class="price-header header">Book Price</div>
                            <div class="price-content content">${bookToDisplay.price}</div>
                            <div class="rating-header header"> Rating</div>
-                           <div class="rating-content content">${getStarsImg(bookToDisplay.rating)}</div>`
+                           <div class="rating-content content">${getratingImg(bookToDisplay.rating)}</div>`
 }
 
 window.onclick = function (event) {
@@ -229,66 +203,11 @@ window.onclick = function (event) {
 }
 
 
-var messageInterval
-
-function displayMessage(message) {
-    var messageModal = document.querySelector('.message')
-    clearTimeout(messageInterval)
-
-    messageModal.style.visibility = 'visible'
-    messageModal.innerText = `${message}`
-
-    messageInterval = setTimeout(() => {
-        messageModal.style.visibility = 'hidden'
-    }, 1000);
-}
-
-
 function onFilterBooks(type, inputVal) {
     filterBy[type] = inputVal.toLowerCase()
 
     if (getBooks().length === 0) return emptyTable()
 
     renderTable()
-}
-
-function onClearFilter() {
-    filterBy = { title: '', price: 0, stars: 0}
-    var titleInput = document.querySelector('.input-title')
-    titleInput.value = ''
-    var priceInput = document.querySelector('.input-price')
-    priceInput.value = 0
-    var starsInput = document.querySelector('.input-stars')
-    starsInput.value = 0
-
-    renderTable()
-}
-
-
-function displayStats() {
-    var statsFooter = document.querySelector('.stats-footer')
-
-    var bookPrices = getBooks().reduce((accu, book) => {
-        if (!accu['cheap']) accu['cheap'] = []
-        if (book.price <= 80) {
-            accu['cheap'].push(book.price)
-        }
-        if (!accu['midrange']) accu['midrange'] = []
-        if (book.price > 80 && book.price < 200) {
-            accu['midrange'].push(book.price)
-        }
-        if (!accu['expensive']) accu['expensive'] = []
-        if (book.price >= 200) {
-            accu['expensive'].push(book.price)
-        }
-        return accu
-    }, {})
-
-    statsFooter.innerHTML =
-        `<div class="stats-container">
-     <div class="expensive">Expensive Books: ${bookPrices.expensive.length}</div> 
-     <div class="midrange">Midrange Books: ${bookPrices.midrange.length}</div>
-     <div class="cheap">Cheap Books: ${bookPrices.cheap.length}</div>
-     </div>`
 }
 
