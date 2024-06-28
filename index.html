@@ -10,17 +10,18 @@
 
 <body onload="onInit()">
     <h1>Book Shop</h1>
-    <div class="message"></div>
 
+    <div class="message"></div>
     <fieldset class="fieldset-filter">
         <legend>Filter Books</legend>
+
         <div class="fieldset-filter-container">
             <div class="header-title">Title:</div>
             <input class="input-title filter-title" type="text" oninput="onFilterBooks('title',this.value)"
                 placeholder="Type to search..">
             <div class="header-price">Price:</div>
             <div class="range-container">
-                <input class="input-price filter-price" type="range" min="0" max="250" value="0"
+                <input class="input-price filter-price" title="title" type="range" min="0" max="250" value="0"
                     oninput="onFilterBooks('price',this.value)">
                 <div class="range-value">0</div>
             </div>
@@ -55,29 +56,41 @@
             </div>
         </fieldset>
     </dialog>
-
-    <div class="table">
-
-        <div class="title title0">Title
-            <span class="sort-up" onclick="onSortBooks('title', 1)">🡅</span>
-            <span class="sort-down" onclick="onSortBooks('title', -1)">🡇</span>
-            <span class="clear-sort" onclick="onClearSort()">Clear</span>
-        </div>
-        <div class="price price0">Price
-            <span class="sort-up" onclick="onSortBooks('price', -1)">🡅</span>
-            <span class="sort-down" onclick="onSortBooks('price', 1)">🡇</span>
-        </div>
-        <div class="rating rating0">Rating
-            <span class="sort-up" onclick="onSortBooks('rating', 1)">🡅</span>
-            <span class="sort-down" onclick="onSortBooks('rating', -1)">🡇</span>
-        </div>
-        <div class="actions actions0">Actions
-            <span class="add-book" onclick="onOpenModal()">➕</span>
+    <div class="table-container">
+        <div class="table">
+            <div class="title title0">Title
+                <span class="sort-up" onclick="onSortBooks('title', 1)">🡅</span>
+                <span class="sort-down" onclick="onSortBooks('title', -1)">🡇</span>
+                <span class="clear-sort" onclick="onClearSort()">Clear</span>
+            </div>
+            <div class="price price0">Price
+                <span class="sort-up" onclick="onSortBooks('price', -1)">🡅</span>
+                <span class="sort-down" onclick="onSortBooks('price', 1)">🡇</span>
+            </div>
+            <div class="rating rating0">Rating
+                <span class="sort-up" onclick="onSortBooks('rating', 1)">🡅</span>
+                <span class="sort-down" onclick="onSortBooks('rating', -1)">🡇</span>
+            </div>
+            <div class="actions actions0">Actions
+                <span class="add-book" onclick="onOpenModal()">➕</span>
+            </div>
         </div>
     </div>
 
     <div class="modal-overlay">
         <div class="modal"></div>
+    </div>
+
+    <div class="page-container">
+        <div class="page next-page" onclick="onChangePage('up', 1)">
+            <img src="img/next.png">
+        </div>
+        <div class="page pagePrev" onclick="onChangePageNums(this)"></div>
+        <div class="page pageCurr" onclick="onChangePageNums(this)"></div>
+        <div class="page pageNext" onclick="onChangePageNums(this)"></div>
+        <div class="page prev-page" onclick="onChangePage('down', -1)">
+            <img src="img/prev.png">
+        </div>
     </div>
 
     <div class="stats-footer"></div>

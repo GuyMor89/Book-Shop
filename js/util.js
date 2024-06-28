@@ -52,11 +52,8 @@ function colorLinesInCSS() {
 
 function getRatingImage(amount) {
     var starImgSrc = `<img src="img/star.png">`
-    var starImgHTML = ''
-
-    for (let i = 0; i < amount; i++) {
-        starImgHTML += starImgSrc
-    }
+    var starImgHTML = starImgSrc.repeat(amount)
+    
     return starImgHTML
 }
 

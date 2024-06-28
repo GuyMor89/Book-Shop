@@ -48,6 +48,12 @@ function getBooks() {
     bookArray = bookArray.sort((a, b) => (b.title.localeCompare(a.title)) * sortBy.title)
     bookArray = bookArray.sort((a, b) => (b.rating - a.rating) * sortBy.rating)
 
+    var pageStart = (pageBy.page * pageBy.amount)
+    var pageEnd = ((pageBy.page * pageBy.amount) + pageBy.amount - 1)
+
+    bookArray = bookArray.filter((book, idx) => idx >= pageStart && idx <= pageEnd)
+
+    console.log(pageBy.page);
     return bookArray
 }
 
@@ -66,7 +72,7 @@ function addBook(inputTitle, inputPrice, inputRating) {
 
     bookArray.push({
         id, title: capitalizeInput(inputTitle),
-        price: +inputPrice, 
+        price: +inputPrice,
         rating: +inputRating,
         image: image.src
     })

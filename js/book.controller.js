@@ -3,6 +3,8 @@
 
 var filterBy = { title: '', price: 0, rating: 0 }
 var sortBy = { title: 0, price: 0, rating: 0 }
+var pageBy = { page: 0, amount: 4 }
+
 
 function onInit() {
     readQueryParams()
@@ -15,6 +17,8 @@ function onInit() {
 
 function renderTable() {
     var table = document.querySelector('.table')
+
+    if (getBooks().length === 0) return emptyTable()
 
     injectHTML(table)
     injectCSS(table)
@@ -63,6 +67,7 @@ function renderTable() {
         document.head.appendChild(styleSheet)
     }
     displayStats()
+    renderPageNumbers()
 }
 
 
@@ -223,6 +228,52 @@ function onFilterBooks(type, inputVal) {
     if (getBooks().length === 0) return emptyTable()
 
     setQueryParams()
+    renderTable()
+}
+
+function onChangePage(direction, value) {
+    var pageAmount = Math.ceil(gBooks.length / pageBy.amount) - 1
+
+    if (direction === 'up') {
+        if (pageBy.page === pageAmount) {
+            pageBy.page = 0
+        } else {
+            pageBy.page += +value
+        }
+    }
+    if (direction === 'down') {
+        if (pageBy.page === 0) {
+            pageBy.page = pageAmount
+        } else {
+            pageBy.page += +value
+        }
+    }
+    renderTable()
+}
+
+function renderPageNumbers() {
+    var previousPage = document.querySelector('.pagePrev')
+    var currentPage = document.querySelector('.pageCurr')
+    var nextPage = document.querySelector('.pageNext')
+
+    var pageAmount = Math.ceil(gBooks.length / pageBy.amount) - 1
+
+    currentPage.innerText = pageBy.page
+    if (+currentPage.innerText === 0) {
+        previousPage.innerText = pageAmount
+    } else {
+        previousPage.innerText = currentPage.innerText - 1
+    }
+    if (+currentPage.innerText === pageAmount) {
+        nextPage.innerText = 0
+    } else {
+        nextPage.innerText = +currentPage.innerText + 1
+    }
+}
+
+function onChangePageNums(elBtn) {
+    pageBy.page = +elBtn.innerText
+
     renderTable()
 }
 
