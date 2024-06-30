@@ -3,7 +3,8 @@
 
 var filterBy = { title: '', price: 0, rating: 0 }
 var sortBy = { title: 0, price: 0, rating: 0 }
-var pageBy = { page: 0, amount: 4 }
+var pageBy = { page: 0, amount: 5, total: 0 }
+var layoutBy = 'rows'
 
 
 function onInit() {
@@ -11,19 +12,25 @@ function onInit() {
 
     renderTable()
 
-    displayStats()
+    // displayStats()
 }
 
 
 function renderTable() {
     var table = document.querySelector('.table')
+    var tableGrid = document.querySelector('.table-grid-container')
 
     if (getBooks().length === 0) return emptyTable()
 
-    injectHTML(table)
-    injectCSS(table)
+    if (layoutBy === 'grid') {
+        injectHTMLGrid(tableGrid)
+        injectCSSGrid(tableGrid)
+    } else {
+        injectHTMLTable(table)
+        injectCSSTable(table)
+    }
 
-    function injectHTML(table) {
+    function injectHTMLTable(table) {
         var injectedHTML = document.querySelectorAll('[data-idx]')
         injectedHTML.forEach(element => element.remove())
 
@@ -41,11 +48,12 @@ function renderTable() {
     }
 
 
-    function injectCSS(table) {
+    function injectCSSTable(table) {
         var bookGridArea = getBooks().map((book) =>
             `"title${book.id} price${book.id} rating${book.id} actions${book.id}"`
         )
 
+        tableGrid.style.display = 'none'
         var currentGridAreas = `"title0 price0 rating0 actions0"`
         var updatedGridAreas = currentGridAreas + bookGridArea.join('')
 
@@ -66,7 +74,53 @@ function renderTable() {
 
         document.head.appendChild(styleSheet)
     }
-    displayStats()
+
+    function injectHTMLGrid(tableGrid) {
+        var injectedHTML = document.querySelectorAll('[data-idx]')
+        injectedHTML.forEach(element => element.remove())
+
+        var bookHTML = getBooks().map((book) =>
+            `<div class="book book${book.id}-container" data-idx>
+                 <div class="title-grid title${book.id}-grid" data-idx>${book.title}</div>
+                 <div class="image-grid image${book.id}-grid" data-idx><img src="${book.image}"></div>
+                 <div class="rating-grid rating${book.id}-grid" data-idx>${getRatingImage(book.rating)}</div>
+                 <div class="actions-grid actions${book.id}-grid" data-idx>
+                   <div class="read-grid read${book.id}-grid" data-idx onclick="onDisplayBook(${book.id})">Read</div>
+                   <div class="update-grid update${book.id}-grid" data-idx onclick="onOpenModal('${book.id}')">Update</div>
+                   <div class="delete-grid delete${book.id}-grid" data-idx onclick="onDeleteBook('${book.id}')">Delete</div>
+                </div>
+             </div>`
+        )
+        tableGrid.insertAdjacentHTML('beforeend', bookHTML.join(''))
+    }
+
+    function injectCSSGrid(tableGrid) {
+        var bookContainerArea = getBooks().map((book, idx) => {
+            if (idx === 0) return `"book${book.id} book${book.id} `
+            if (getBooks().length === (pageBy.amount - 1) && idx === getBooks().length - 1) return `". . book${book.id} book${book.id} . ."`
+            if (idx === getBooks().length - 1) return `book${book.id} book${book.id} ."`
+            if ((idx % pageBy.amount) - 1 === 0) return `book${book.id} book${book.id} `
+            if ((idx % pageBy.amount) - 2 === 0) return `book${book.id} book${book.id}" `
+            if ((idx % pageBy.amount) - 3 === 0) return `". book${book.id} book${book.id} `
+            if ((idx % pageBy.amount) - 4 === 0) return `book${book.id} book${book.id}"`
+        })
+
+        tableGrid.style.display = 'grid'
+        tableGrid.style.gridTemplateAreas = bookContainerArea.join('')
+
+        var bookContainerCSS = getBooks().map((book) =>
+            `.book${book.id}-container { grid-area: book${book.id} }`
+        ).join('')
+
+        colorLinesInCSS()
+        // colorBookLinesInCSS()
+
+        var styleSheet = document.createElement('style')
+        styleSheet.textContent = bookContainerCSS
+
+        document.head.appendChild(styleSheet)
+    }
+    // displayStats()
     renderPageNumbers()
 }
 
@@ -106,6 +160,10 @@ function onDeleteBook(id) {
     deleteBook(id)
     displayMessage('Book deleted!')
 
+    getBooks()
+
+    pageBy.page = Math.ceil(pageBy.total / pageBy.amount) - 1
+
     renderTable()
 
     if (getBooks().length === 0) return emptyTable()
@@ -136,6 +194,10 @@ function onUpdateBook(id) {
         inputTitle.value = inputPrice.value = inputRating.value = ''
 
         displayMessage('Book updated!')
+
+        getBooks()
+
+        pageBy.page = Math.ceil(pageBy.total / pageBy.amount) - 1
 
         renderTable()
     }, 1000);
@@ -216,7 +278,10 @@ function onCloseModal() {
 
 function onSortBooks(type, direction) {
     sortBy[type] = direction
-    console.log(sortBy);
+
+    getBooks()
+
+    pageBy.page = Math.ceil(pageBy.total / pageBy.amount) - 1
 
     setQueryParams()
     renderTable()
@@ -225,14 +290,16 @@ function onSortBooks(type, direction) {
 function onFilterBooks(type, inputVal) {
     filterBy[type] = inputVal.toLowerCase()
 
-    if (getBooks().length === 0) return emptyTable()
+    getBooks()
+
+    if (getBooks().length === 0) pageBy.page = Math.ceil(pageBy.total / pageBy.amount) - 1
 
     setQueryParams()
     renderTable()
 }
 
 function onChangePage(direction, value) {
-    var pageAmount = Math.ceil(gBooks.length / pageBy.amount) - 1
+    var pageAmount = Math.ceil(pageBy.total / pageBy.amount) - 1
 
     if (direction === 'up') {
         if (pageBy.page === pageAmount) {
@@ -256,9 +323,10 @@ function renderPageNumbers() {
     var currentPage = document.querySelector('.pageCurr')
     var nextPage = document.querySelector('.pageNext')
 
-    var pageAmount = Math.ceil(gBooks.length / pageBy.amount) - 1
+    var pageAmount = Math.ceil(pageBy.total / pageBy.amount) - 1
 
     currentPage.innerText = pageBy.page
+
     if (+currentPage.innerText === 0) {
         previousPage.innerText = pageAmount
     } else {
@@ -269,11 +337,20 @@ function renderPageNumbers() {
     } else {
         nextPage.innerText = +currentPage.innerText + 1
     }
+
+    setQueryParams()
+    // changeTableHeight()
 }
 
 function onChangePageNums(elBtn) {
     pageBy.page = +elBtn.innerText
 
     renderTable()
+}
+
+function changeTableHeight() {
+    var tableContainer = document.querySelector('.table-container')
+
+    tableContainer.style.height = `${(pageBy.amount * 36) + 34}px`
 }
 
