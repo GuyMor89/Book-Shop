@@ -1,8 +1,5 @@
 'use strict'
 
-const apiKey = 'AIzaSyBapRQvMIX5I-TzASsjasOuCxqqRMg7qp8' // Replace with your actual API key
-const cseId = '55db37c42e2a44265' // Replace with your actual CSE ID
-
 async function searchImage(query) {
     const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cseId}&searchType=image&q=${query}`
 

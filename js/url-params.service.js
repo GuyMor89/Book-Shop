@@ -9,17 +9,16 @@ function readQueryParams() {
         price: +queryParams.get('filter-price') || 0,
         rating: +queryParams.get('filter-rating') || 0
     }
-
     sortBy = {
         title: queryParams.get('sort-title') || '',
         price: +queryParams.get('sort-price') || 0,
         rating: +queryParams.get('sort-rating') || 0
     }
+    pageBy = {
+        page: +queryParams.get('page-current') || 0,
+        amount: +queryParams.get('page-amount') || 5,
+    }
 
-    // if (queryParams.get('pageIdx')) {
-    //     gQueryOptions.page.idx = +queryParams.get('pageIdx')
-    //     gQueryOptions.page.size = +queryParams.get('pageSize')
-    // }
     renderQueryParams()
 }
 
@@ -40,10 +39,8 @@ function setQueryParams() {
     queryParams.set('sort-price', sortBy.price)
     queryParams.set('sort-rating', sortBy.rating)
 
-    // if (gQueryOptions.page) {
-    //     queryParams.set('pageIdx', gQueryOptions.page.idx)
-    //     queryParams.set('pageSize', gQueryOptions.page.size)
-    // }
+    queryParams.set('page-current', pageBy.page)
+    queryParams.set('page-amount', pageBy.amount)
 
     const newUrl =
         window.location.protocol + "//" +

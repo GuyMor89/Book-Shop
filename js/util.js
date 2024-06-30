@@ -50,6 +50,28 @@ function colorLinesInCSS() {
     })
 }
 
+function colorBookLinesInCSS() {
+
+    const classPrefixes = ['book']
+
+    classPrefixes.forEach(prefix => {
+        document.querySelectorAll(`[class^="${prefix}"]`).forEach((element, index) => {
+            if (index % 2 !== 0) {
+                element.style.backgroundColor = '#e0e0e0'
+            }
+        })
+    })
+    classPrefixes.forEach(prefix => {
+        document.querySelectorAll(`[class^="${prefix}"]`).forEach((element, index) => {
+            if (index % 2 === 0) {
+                element.style.backgroundColor = 'white'
+            }
+        })
+    })
+}
+
+
+
 function getRatingImage(amount) {
     var starImgSrc = `<img src="img/star.png">`
     var starImgHTML = starImgSrc.repeat(amount)

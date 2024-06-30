@@ -58,23 +58,30 @@
     </dialog>
     <div class="table-container">
         <div class="table">
-            <div class="title title0">Title
-                <span class="sort-up" onclick="onSortBooks('title', 1)">🡅</span>
-                <span class="sort-down" onclick="onSortBooks('title', -1)">🡇</span>
+            <div class="title title0">
+                <span class="row" onclick="changeLayout('rows')">☰</span>
+                <span class="grid" onclick="changeLayout('grid')">𝄜</span>
+                <span class="label">Title</span>
+                <span class="sort-up" onclick="onSortBooks('title', -1)">🡅</span>
+                <span class="sort-down" onclick="onSortBooks('title', 1)">🡇</span>
                 <span class="clear-sort" onclick="onClearSort()">Clear</span>
             </div>
-            <div class="price price0">Price
+            <div class="price price0">
+                <span class="label">Price</span>
                 <span class="sort-up" onclick="onSortBooks('price', -1)">🡅</span>
                 <span class="sort-down" onclick="onSortBooks('price', 1)">🡇</span>
             </div>
-            <div class="rating rating0">Rating
+            <div class="rating rating0">
+                <span class="label">Rating</span>
                 <span class="sort-up" onclick="onSortBooks('rating', 1)">🡅</span>
                 <span class="sort-down" onclick="onSortBooks('rating', -1)">🡇</span>
             </div>
-            <div class="actions actions0">Actions
+            <div class="actions actions0">
+                <span class="label">Rating</span>
                 <span class="add-book" onclick="onOpenModal()">➕</span>
             </div>
         </div>
+        <div class="table-grid-container"></div>
     </div>
 
     <div class="modal-overlay">
@@ -93,7 +100,7 @@
         </div>
     </div>
 
-    <div class="stats-footer"></div>
+    <!-- <div class="stats-footer"></div> -->
 
     <script src="js/util.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

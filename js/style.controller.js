@@ -31,7 +31,7 @@ function displayMessage(message) {
 
     messageInterval = setTimeout(() => {
         messageModal.style.visibility = 'hidden'
-    }, 1000);
+    }, 2000);
 }
 
 
@@ -82,5 +82,12 @@ function displayStats() {
      <div class="cheap">Cheap Books: ${bookPrices.cheap.length}</div>
      </div>`
     }
+}
+
+
+function changeLayout(type) {
+     layoutBy = type
+
+     renderTable()
 }
 
